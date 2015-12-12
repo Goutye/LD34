@@ -33,6 +33,7 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 end
 
 function AI:update(dt)
+	self.dt = dt
 	self.acceleration = EasyLD.point:new(0, 0)
 
 	self.collideArea.r = 5 + self.growing / 10
@@ -259,6 +260,7 @@ function AI:onCollide(entity)
 		v:normalize()
 		self.speed = v * ratio * ratioWeight * self.onCollideWith[entity.id]
 		self.pos = self.pos + self.speed
+		self.collideArea:moveTo(self.pos.x, self.pos.y)
 		print("there", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
 		return
 	end
@@ -279,6 +281,8 @@ function AI:onCollide(entity)
 
 	speedEntity = speedEntity * ratioWeight * dir
 	self.speed = self.speed + speedEntity
+	self.pos = self.pos + speedEntity * self.dt
+	self.collideArea:moveTo(self.pos.x, self.pos.y)
 
 	self.prevPos = self.pos:copy()
 end

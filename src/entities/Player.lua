@@ -26,6 +26,7 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 end
 
 function Player:update(dt)
+	self.dt = dt
 	local ACCELERATION = 750
 
 	self.acceleration = EasyLD.point:new(0, 0)
@@ -79,6 +80,7 @@ function Player:onCollide(entity)
 		v:normalize()
 		self.speed = v * ratio * ratioWeight * self.onCollideWith[entity.id]
 		self.pos = self.pos + self.speed
+		self.collideArea:moveTo(self.pos.x, self.pos.y)
 		print("here", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
 		return
 	end
@@ -94,10 +96,13 @@ function Player:onCollide(entity)
 	if speedEntity > 0 then
 		speedEntity = 0
 	end
+
 	local ratioWeight = entity.weight / self.weight
 
 	speedEntity = speedEntity * ratioWeight * dir
-	self.speed = self.speed + speedEntity --* self.onCollideWith[entity.id]
+	self.speed = self.speed + speedEntity
+	self.pos = self.pos + speedEntity * self.dt
+	self.collideArea:moveTo(self.pos.x, self.pos.y)
 
 	self.prevPos = self.pos:copy()
 end
