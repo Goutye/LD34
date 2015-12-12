@@ -55,7 +55,9 @@ function WorldSlice:draw()
 	self.map:draw()
 	for i = self.offset.y, self.offset.y + self.mapHeight - 1 do
 		for _,entity in pairs(self.entitiesOrder[i]) do
-			entity:draw()
+			if not entity.isDead then
+				entity:draw()
+			end
 		end
 	end
 end

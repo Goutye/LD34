@@ -13,7 +13,7 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.spriteAnimation = spriteAnimation
 	self.isDead = false
 
-	self.growing = 0
+	self.growing = 50
 	self.weight = 5
 
 	self.wasHit = false
@@ -27,7 +27,7 @@ end
 
 function Player:update(dt)
 	self.dt = dt
-	local ACCELERATION = 750
+	local ACCELERATION = 750 + self.growing /2
 
 	self.acceleration = EasyLD.point:new(0, 0)
 	local pos = EasyLD.mouse:getPosition()
