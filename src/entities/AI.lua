@@ -21,7 +21,7 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 	self.spriteAnimation = spriteAnimation
 	self.isDead = false
 
-	self.growing = 50
+	self.growing = 0
 	self.weight = 5
 
 	self.wasHit = false
@@ -29,6 +29,7 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 	self.timerInvincibility = 0
 
 	self.onCollideWith = {}
+	self.prevPos = self.pos:copy()
 end
 
 function AI:update(dt)
@@ -56,39 +57,59 @@ function AI:update(dt)
 end
 
 function AI:interactWith()
-	local player = EasyLD.screen.current.player
+	local opponents = EasyLD.screen.current:getSliceEntities()
 	local entities = EasyLD.screen.current:getRoundEntities()
 	if #entities > 0 then
 		local e = entities[#entities]
 		if e.isDead then
-			self:interactPlayer(player)
+			self:interactOpponents(opponents)
 		elseif e:isInstanceOf(LightRay) then
-			self:interactLightRay(e, player)
+			self:interactLightRay(e, opponents)
 		elseif e:isInstanceOf(LightArea) then
-			self:interactLightArea(e, player)
+			self:interactLightArea(e, opponents)
 		elseif e:isInstanceOf(Bubbles) then
-			self:interactBubbles(e, player)
+			self:interactBubbles(e, opponents)
 		end
 	else
-		self:interactPlayer(player)
+		self:interactOpponents(opponents)
 	end
 end
 
-function AI:interactPlayer(player)
-	dir = EasyLD.vector:of(self.pos, player.pos)
+function AI:interactOpponents(opponents)
+	local target = nil
+	local growing = -500
+	for _,o in ipairs(opponents) do
+		if not o.passive and o.growing > growing  and self.growing > o.growing then
+			growing = o.growing
+			target = o
+		end
+	end
+	if target == nil then
+		target = {pos = EasyLD.point:new(EasyLD.window.w / 2, EasyLD.window.h / 2)}
+	end
+	dir = EasyLD.vector:of(self.pos, target.pos)
 	dir:normalize()
 	self.acceleration.x = self.acceleration.x + ACCELERATION * dir.x
 	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
 end
 
-function AI:interactBubbles(e, player)
+function AI:interactBubbles(e, opponents)
 	--Go to the shortest distance between you and a bubble
-	--Have a chance to focus on the player if growing > 0
+	--Have a chance to focus on the opponents if growing > 0
 
 	local bubbles = e.entities
 
-	if self.growing > player.growing and math.random() * self.growing / player.growing > 1.5 then
-		dir = EasyLD.vector:of(self.pos, player.pos)
+	local target = nil
+	local growing = -500
+	for _,o in ipairs(opponents) do
+		if not o.passive and o.growing > growing  and self.growing > o.growing then
+			growing = o.growing
+			target = o
+		end
+	end
+
+	if target ~= nil and self.growing > target.growing and math.random() * self.growing / target.growing > 1.5 then
+		dir = EasyLD.vector:of(self.pos, target.pos)
 	else
 		local minDist = 99999999
 		local minB = {power = 0}
@@ -107,7 +128,10 @@ function AI:interactBubbles(e, player)
 		if minB.pos ~= nil then
 			dir = EasyLD.vector:of(self.pos, minB.pos)
 		else
-			dir = EasyLD.vector:of(self.pos, player.pos)
+			if target == nil then
+				target = {pos = EasyLD.point:new(EasyLD.window.w / 2, EasyLD.window.h / 2)}
+			end
+			dir = EasyLD.vector:of(self.pos, target.pos)
 		end
 	end
 
@@ -116,7 +140,7 @@ function AI:interactBubbles(e, player)
 	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
 end
 
-function AI:interactLightArea(e, player)
+function AI:interactLightArea(e, opponents)
 	--Go in the area
 	--Bump the player
 	local dir = nil
@@ -135,20 +159,20 @@ function AI:interactLightArea(e, player)
 
 	if poly:collide(self.collideArea) then
 		--Safe => Bump
-
-		if poly:collide(player.collideArea) then
-			local distP = EasyLD.vector:of(player.pos, safestP):squaredLength()
-			local dist = EasyLD.vector:of(self.pos, safestP):squaredLength()
-
-			if distP < dist then
-				--Go toward the safest point
-				dir = EasyLD.vector:of(self.pos, safestP) 
-			else
-				--BUMP
-				dir = EasyLD.vector:of(self.pos, player.pos) 
+		local target = nil
+		local dist = EasyLD.vector:of(self.pos, safestP):squaredLength()
+		for _,o in ipairs(opponents) do
+			if poly:collide(o.collideArea) then
+				local distP = EasyLD.vector:of(o.pos, safestP):squaredLength()
+				
+				if distP > dist then
+					dir = EasyLD.vector:of(self.pos, o.pos) 
+					dist = distP
+				end
 			end
-		else
-			print(safestP.x, safestP.y)
+		end
+
+		if dir == nil then
 			dir = EasyLD.vector:of(self.pos, safestP) 
 		end
 	else
@@ -172,31 +196,36 @@ function AI:interactLightArea(e, player)
 	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
 end
 
-function AI:interactLightRay(e, player)
+function AI:interactLightRay(e, opponents)
 	--Go in the light, and the shortest dist the better
 	--Bump the player
 	local dir = nil
 	local v = EasyLD.vector:of(e.pos, self.pos)
+	local dist = v:squaredLength()
 	local proj = e.pos + e.dir * e.dir:dot(v)
 
 	local bestDir = EasyLD.vector:of(self.pos, proj)
 
 	if bestDir:squaredLength() < 1600 then
-		local vP = EasyLD.vector:of(e.pos, player.pos)
-		local projP = e.pos + e.dir * e.dir:dot(vP)
-		local bestDirP = EasyLD.vector:of(player.pos, projP)
+		local target = nil
+		local growing = -500
+		for _,o in ipairs(opponents) do
+			local vP = EasyLD.vector:of(e.pos, o.pos)
+			local projP = e.pos + e.dir * e.dir:dot(vP)
+			local bestDirP = EasyLD.vector:of(o.pos, projP)
+			local distP = vP:squaredLength()
 
-		if bestDirP:squaredLength() < 1600 then
-			--player on the light
-			if v:squaredLength() < vP:squaredLength() then
-				--player get less light
-				dir = EasyLD.vector:of(self.pos, e.pos)
-			else
-				--player get more light
-				dir = EasyLD.vector:of(self.pos, player.pos)
+			if bestDirP:squaredLength() < 1600 then
+				--player on the light
+				if dist >= distP then
+					--player get more light
+					dist = distP
+					dir = bestDirP
+				end
 			end
-		else
-			--player not on the light
+		end
+
+		if dir == nil then
 			dir = EasyLD.vector:of(self.pos, e.pos)
 		end
 	else
@@ -217,11 +246,24 @@ function AI:onCollide(entity)
 		return
 	end
 
-	if self.onCollideWith[entity.id] == nil then
-		self.onCollideWith[entity.id] = 1
-	else
-		self.onCollideWith[entity.id] = self.onCollideWith[entity.id] + 0.1
+	if self.pos == self.prevPos then
+		if self.onCollideWith[entity.id] == nil then
+			self.onCollideWith[entity.id] = 1
+		else
+			self.onCollideWith[entity.id] = self.onCollideWith[entity.id] + 0.02
+		end
+		local v = EasyLD.vector:of(entity.pos, self.pos)
+		local dist = v:length()
+		local ratio = 1 - dist/(self.collideArea.r + entity.collideArea.r)
+		local ratioWeight = entity.weight / self.weight
+		v:normalize()
+		self.speed = v * ratio * ratioWeight * self.onCollideWith[entity.id]
+		self.pos = self.pos + self.speed
+		print("there", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
+		return
 	end
+
+	self.onCollideWith[entity.id] = 1
 	
 	self.wasHit = true
 
@@ -236,7 +278,9 @@ function AI:onCollide(entity)
 	local ratioWeight = entity.weight / self.weight
 
 	speedEntity = speedEntity * ratioWeight * dir
-	self.speed = self.speed + speedEntity --* self.onCollideWith[entity.id]
+	self.speed = self.speed + speedEntity
+
+	self.prevPos = self.pos:copy()
 end
 
 return AI

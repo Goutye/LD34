@@ -21,6 +21,8 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.timerInvincibility = 0
 
 	self.onCollideWith = {}
+
+	self.prevPos = self.pos:copy()
 end
 
 function Player:update(dt)
@@ -61,8 +63,27 @@ function Player:onCollide(entity)
 	if self.onCollideWith[entity.id] == nil then
 		self.onCollideWith[entity.id] = 1
 	else
-		self.onCollideWith[entity.id] = self.onCollideWith[entity.id] + 0.1
+		self.onCollideWith[entity.id] = self.onCollideWith[entity.id] + 0.01
 	end
+
+	if self.pos == self.prevPos then
+		if self.onCollideWith[entity.id] == nil then
+			self.onCollideWith[entity.id] = 1
+		else
+			self.onCollideWith[entity.id] = self.onCollideWith[entity.id] + 0.02
+		end
+		local v = EasyLD.vector:of(entity.pos, self.pos)
+		local dist = v:length()
+		local ratio = 1 - dist/(self.collideArea.r + entity.collideArea.r)
+		local ratioWeight = entity.weight / self.weight
+		v:normalize()
+		self.speed = v * ratio * ratioWeight * self.onCollideWith[entity.id]
+		self.pos = self.pos + self.speed
+		print("here", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
+		return
+	end
+
+	self.onCollideWith[entity.id] = 1
 	
 	self.wasHit = true
 
@@ -77,6 +98,8 @@ function Player:onCollide(entity)
 
 	speedEntity = speedEntity * ratioWeight * dir
 	self.speed = self.speed + speedEntity --* self.onCollideWith[entity.id]
+
+	self.prevPos = self.pos:copy()
 end
 
 return Player

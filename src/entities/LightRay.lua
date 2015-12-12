@@ -8,7 +8,7 @@ function LightRay:initialize()
 
 	self.isDead = false
 	self.power = 100
-	self.growRateMax = EasyLD.vector(EasyLD.window.w, EasyLD.window.h)
+	self.growRateMax = EasyLD.vector(EasyLD.window.w,0)
 	self.growRateMax = self.growRateMax:length()
 
 	self.dir = EasyLD.vector:new(math.random() - 0.5, math.random() - 0.5)
@@ -52,7 +52,7 @@ function LightRay:update(dt, slice)
 	for _,entity in ipairs(slice.entities) do
 		if entity:collide(self) and not entity.passive then
 			local growRate = EasyLD.vector:of(self.pos, entity.pos)
-			growRate = (1 - growRate:length() / self.growRateMax) * 2
+			growRate = (1 - growRate:length() / self.growRateMax)
 			self.power = self.power - growRate
 			entity.growing = entity.growing + growRate
 			self.collideArea.c.a = self.power

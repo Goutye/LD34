@@ -24,20 +24,22 @@ function Round:update(dt)
 
 	self.timer = self.timer + dt
 	if self.timer >= self.nextEventTimer then
-		self.timer = self.timer - self.nextEventTimer
-		self.nextEventTimer = math.random() * 4 + 9
+		self.timer = self.timer - self.nextEventTimer		
 		self:newEvent()
 	end
 end
 
 function Round:newEvent()
-	local nb = math.random(3, 3)
+	local nb = math.random(1, 4)
 	if nb == 1 then
 		table.insert(self.entities, Bubbles:new())
-	elseif nb == 2 then
+		self.nextEventTimer = math.random() * 4 + 8
+	elseif nb >= 2 and nb < 4 then
 		table.insert(self.entities, LightRay:new())
+		self.nextEventTimer = math.random() * 4 + 4
 	else
 		table.insert(self.entities, LightArea:new())
+		self.nextEventTimer = math.random() * 4 + 9
 	end
 end
 

@@ -25,8 +25,12 @@ function WorldSlice:update(dt)
 		entity:tryMove(dt, self.map, self.entities)
 		local newY = math.floor(entity.pos.y)
 		if oldY ~= newY then
-			self.entitiesOrder[oldY][entity] = nil
-			self.entitiesOrder[newY][entity] = entity
+			if self.entitiesOrder[oldY] ~= nil then
+				self.entitiesOrder[oldY][entity] = nil
+			end
+			if self.entitiesOrder[newY] ~= nil then
+				self.entitiesOrder[newY][entity] = entity
+			end
 		end
 	end
 

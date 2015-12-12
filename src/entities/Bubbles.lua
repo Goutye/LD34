@@ -21,10 +21,12 @@ function Bubbles:initialize()
 	end
 
 	if side < 1 then
+		local towardCenter = 0
+		if math.abs(self.dir.y) < 0.2 then towardCenter = 150 end
 		if self.dir.x > 0 then
-			self.pos.x = math.random(0, EasyLD.window.w / 2)
+			self.pos.x = math.random(towardCenter, EasyLD.window.w / 2)
 		else
-			self.pos.x = math.random(EasyLD.window.w / 2, EasyLD.window.w - 1)
+			self.pos.x = math.random(EasyLD.window.w / 2, EasyLD.window.w - towardCenter - 1)
 		end
 		if self.dir.y < 0 then
 			self.pos.y = EasyLD.window.h - 1 + self.r
@@ -32,10 +34,12 @@ function Bubbles:initialize()
 			self.pos.y = - self.r
 		end 
 	else
+		local towardCenter = 0
+		if math.abs(self.dir.x) < 0.2 then towardCenter = 100 end
 		if self.dir.y > 0 then
-			self.pos.y = math.random(0, EasyLD.window.h / 2)
+			self.pos.y = math.random(towardCenter, EasyLD.window.h / 2)
 		else
-			self.pos.y = math.random(EasyLD.window.h / 2, EasyLD.window.h - 1)
+			self.pos.y = math.random(EasyLD.window.h / 2, EasyLD.window.h - towardCenter - 1)
 		end
 		if self.dir.x < 0 then
 			self.pos.x = EasyLD.window.w - 1 + self.r
