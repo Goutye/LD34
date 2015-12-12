@@ -50,7 +50,7 @@ function DrystalGraphics:polygon(mode, color, ...)
 	if mode == "fill" then
 		drystal.draw_polygon(unpack(p))
 	else
-		drystal.draw_polyline(unpack(p), unpack(p))
+		drystal.draw_polyline(true, unpack(p))
 	end
 
 	drystal.set_color(255,255,255)

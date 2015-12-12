@@ -2,7 +2,7 @@ local class = require 'EasyLD.lib.middleclass'
 
 local Entity = class('Entity')
 
-local MAX_SPEED = 500
+MAX_SPEED = 1500
 local SQUARED_MAX_SPEED = MAX_SPEED * MAX_SPEED
 local FRICTION = 0.95
 
@@ -55,7 +55,7 @@ function Entity:tryMove(dt, map, entities)
 
 		local collide = false
 
-		if map:collide(self.collideArea) then
+		if map:collide(self) then
 			collide = true
 		end
 
@@ -63,7 +63,7 @@ function Entity:tryMove(dt, map, entities)
 			if id ~= self.id and self:collide(entity) then
 				entity:onCollide(self)
 				self:onCollide(entity)
-				collide = true
+				collide = not self.passive and not entity.passive
 			end
 		end
 
