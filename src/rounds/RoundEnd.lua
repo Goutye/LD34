@@ -16,10 +16,10 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 60
+	self.totalTime = 0.01
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
-	self.roundName = "Round " .. (10 - self.nbAIStart)
+	self.roundName = "Growtye"
 	self.timerOnEnd = 0
 	self.timerOnEndMax = 5
 	self:newEvent()
@@ -54,33 +54,31 @@ function Round:initialize(slice)
 
 	self.countSecs = 10
 
-	self.roundInfo = "Grow and be the last!"
+	self.roundInfo = "Growtye"
 	self.isStart = true
 	self.timeStart = 0
-	self.timeStartMax = 2
+	self.timeStartMax = 0.5
 end
 
 function Round:load(nbAIStart)
 	self.nbAIStart = nbAIStart
 	if self.nbAIStart > 4 then
-		self.roundName = "Round " .. (10 - self.nbAIStart)
+		--self.roundName = "Round " .. (10 - self.nbAIStart)
 	elseif self.nbAIStart == 4 then
-		self.roundName = "1/8-Final Round"
+		--self.roundName = "1/8-Final Round"
 	elseif self.nbAIStart == 3 then
-		self.roundName = "1/4-Final Round"
-		self.roundInfo = self.roundName
+		--self.roundName = "1/4-Final Round"
 	elseif self.nbAIStart == 2 then
-		self.roundName = "1/2-Final Round"
-		self.roundInfo = self.roundName
+		--self.roundName = "1/2-Final Round"
 	else
-		self.roundName = "Final Round"
-		self.roundInfo = self.roundName
+		--self.roundName = "Final Round"
 	end
 
 	self.entities = {}
 	self:newEvent()
 
-	EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
+	self.timerX = EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
+	self.timerY = EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout"):oncomplete(function() self.isStart = false end)
 end
 
 function Round:update(dt)
@@ -89,8 +87,8 @@ function Round:update(dt)
 	elseif self.isStart then
 		self.timeStart = self.timeStart + dt
 		if self.timeStart >= self.timeStartMax then
-			self.timeStartMax = 99999
-			EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.isStart = false end)
+			self.isStart = false
+			--EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.isStart = false end)
 		end
 	else
 		for _,entity in ipairs(self.entities) do
@@ -108,11 +106,11 @@ function Round:update(dt)
 			end
 		end
 
-		self.totalTime = self.totalTime - dt
-		if self.totalTime < 40 and not self.bonus[1] then
+		self.totalTime = self.totalTime + dt
+		if self.totalTime > 40 and not self.bonus[1] then
 			self.bonus[1] = true
 			self:distribBonuses()
-		elseif self.totalTime < 20 and not self.bonus[2] then
+		elseif self.totalTime > 20 and not self.bonus[2] then
 			self.bonus[2] = true
 			self:distribBonuses()
 		elseif self.totalTime < 0 then
@@ -121,8 +119,8 @@ function Round:update(dt)
 
 			self.endTop = EasyLD.screen.current:getTop()
 
-			EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
-			EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
+			--EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
+			--EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
 
 			for _,e in ipairs(self.endTop) do
 				e.bonus = nil
@@ -133,9 +131,9 @@ function Round:update(dt)
 	if self.totalTime < self.countSecs then
 		if self.countSecs == 1 then
 			self.sfx.fiveLast2:play()
-			self.sfx.fiveLast:play(self.sfx.fiveLast.volume * (10 - self.countSecs + 1)/10)
+			self.sfx.fiveLast:play(0.2 * (10 - self.countSecs + 1)/10)
 		else
-			self.sfx.fiveLast:play(self.sfx.fiveLast.volume * (10 - self.countSecs + 1)/10)
+			self.sfx.fiveLast:play(0.2 * (10 - self.countSecs + 1)/10)
 		end
 		self.countSecs = self.countSecs - 1
 		if self.countSecs < 0 then self.countSecs = -99999 end
@@ -159,18 +157,37 @@ function Round:newEvent()
 	end
 end
 
-function Round:draw()
+function Round:draw(gamedata)
+	local player = gamedata.player
+	local top = gamedata.nbRemaining + 1
+
 	for _,entity in ipairs(self.entities) do
 		if not entity.isDead then
 			entity:draw()
 		end
 	end
 
-	if self.isStart then
-		self.areaPolyRound:draw()
-		local box2 = EasyLD.box:new(self.polyRound.x + 400, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
-		font:printOutLine(self.roundInfo, 90, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+	self.areaPolyRound:draw()
+	self.areaPolyTop:draw()
+	local box2 = EasyLD.box:new(self.polyRound.x + 400, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+	font:printOutLine(self.roundInfo, 90, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+	local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+
+	if player.isDead then
+		font:printOutLine("You have been defeated!", 40, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		box:translate(-50, 100)
+		font:printOutLine("You grew a lot dude: " ..math.floor(player.growing), 40, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		box:translate(-25, 50)
+		font:printOutLine("But only " ..top.. ". ! Not enough." , 40, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+	else
+		font:printOutLine("Victory, Sir of the Grow!", 40, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		box:translate(-50, 100)
+		font:printOutLine("You grew a lot dude: " ..math.floor(player.growing), 40, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		box:translate(-25, 50)
+		font:printOutLine("I can't even see your leaves anymore!" , 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 	end
+	box:translate(-50, 100)
+	font:printOutLine("Click to try again", 50, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 
 	if self.isEnd then
 		local top = self.endTop
@@ -221,8 +238,8 @@ function Round:onEnd(dt)
 	self.timerOnEnd = self.timerOnEnd + dt
 	if self.timerOnEnd >= self.timerOnEndMax and not self.timerEndMaxDone then
 		self.timerEndMaxDone = true
-		EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.nextRound = true end)
-		EasyLD.flux.to(self.areaPolyTop, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backin")
+		--EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.nextRound = true end)
+		--EasyLD.flux.to(self.areaPolyTop, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backin")
 	end
 end
 

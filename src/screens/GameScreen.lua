@@ -86,7 +86,7 @@ function GameScreen:update(dt)
 		end
 
 		if self.player.isDead or #self.entities == 1 then
-			EasyLD:nextScreen(EndScreen:new({player = self.player, nbRemaining = #self.entities}), "cover", {0,1}, 3, true, "bounceout")
+			EasyLD:nextScreen(EndScreen:new({player = self.player, nbRemaining = #self.entities}), "fusion", nil, 0.5, false, "quadinout")
 		end
 		
 		if self.currentRound > #self.rounds then

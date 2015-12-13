@@ -66,8 +66,10 @@ function Round:load(nbAIStart)
 		--self.roundName = "Round " .. (10 - self.nbAIStart)
 	elseif self.nbAIStart == 2 then
 		self.roundName = "1/2-Final Round"
+		self.roundInfo = self.roundName
 	else
 		self.roundName = "Final Round"
+		self.roundInfo = self.roundName
 	end
 
 	self.entities = {}

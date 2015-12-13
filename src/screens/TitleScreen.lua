@@ -75,7 +75,7 @@ function TitleScreen:update(dt)
 	self.rounds[self.currentRound]:update(dt)
 
 	if EasyLD.mouse:isPressed("l") then
-		EasyLD.screen:nextScreen(GameScreen:new(), nil, nil, nil, true)
+		EasyLD.screen:nextScreen(GameScreen:new(), "fusion", nil, 0.5, false, "quadinout")
 	end
 end
 
@@ -137,7 +137,8 @@ function TitleScreen:draw()
 
 	EasyLD.postfx:use("pixelate", 2, 2)
 
-	font:printOutLine("Growing / Two buttons controls - LD34", 20, EasyLD.box:new(0, 0,EasyLD.window.w, EasyLD.window.h), "right", "bottom", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+	font:printOutLine("Growing / Two buttons controls", 20, EasyLD.box:new(0, 0,EasyLD.window.w, EasyLD.window.h), "right", "bottom", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+	font:printOutLine("Goutye - LD34", 20, EasyLD.box:new(0, 0,EasyLD.window.w, EasyLD.window.h-20), "right", "bottom", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
 end
 
 function TitleScreen:onEnd()
