@@ -16,10 +16,10 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 60
+	self.totalTime = 30
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
-	self.roundName = "Round " .. (10 - self.nbAIStart)
+	self.roundName = "Round Ray"
 	self.timerOnEnd = 0
 	self.timerOnEndMax = 5
 	self:newEvent()
@@ -54,7 +54,7 @@ function Round:initialize(slice)
 
 	self.countSecs = 10
 
-	self.roundInfo = "  Grow!"
+	self.roundInfo = "Grow into the ray!"
 	self.isStart = true
 	self.timeStart = 0
 	self.timeStartMax = 2
@@ -73,18 +73,19 @@ function Round:load(nbAIStart)
 	self.entities = {}
 	self:newEvent()
 
-	EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
+	self.timerX = EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
 end
 
 function Round:update(dt)
-	if self.isEnd then
-		self:onEnd(dt)
-	elseif self.isStart then
+	if self.isStart then
 		self.timeStart = self.timeStart + dt
 		if self.timeStart >= self.timeStartMax then
 			self.timeStartMax = 99999
 			EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.isStart = false end)
 		end
+	end
+	if self.isEnd then
+		self:onEnd(dt)
 	else
 		for _,entity in ipairs(self.entities) do
 			if not entity.isDead then
@@ -102,10 +103,10 @@ function Round:update(dt)
 		end
 
 		self.totalTime = self.totalTime - dt
-		if self.totalTime < 40 and not self.bonus[1] then
+		if self.totalTime < 15 and not self.bonus[1] then
 			self.bonus[1] = true
-			self:distribBonuses()
-		elseif self.totalTime < 20 and not self.bonus[2] then
+			self:distribBonuses(1)
+		elseif self.totalTime < -999 and not self.bonus[2] then
 			self.bonus[2] = true
 			self:distribBonuses()
 		elseif self.totalTime < 0 then
@@ -121,28 +122,27 @@ function Round:update(dt)
 				e.bonus = nil
 			end
 		end
-	end
-
-	if self.totalTime < self.countSecs then
-		if self.countSecs == 1 then
-			self.sfx.fiveLast2:play()
-			self.sfx.fiveLast:play(self.sfx.fiveLast.volume * (10 - self.countSecs + 1)/10)
-		else
-			self.sfx.fiveLast:play(self.sfx.fiveLast.volume * (10 - self.countSecs + 1)/10)
+		if self.totalTime < self.countSecs then
+			if self.countSecs == 1 then
+				self.sfx.fiveLast2:play()
+				self.sfx.fiveLast:play((self.sfx.fiveLast.volume or 0.2) * (10 - self.countSecs + 1)/10)
+			else
+				self.sfx.fiveLast:play((self.sfx.fiveLast.volume or 0.2) * (10 - self.countSecs + 1)/10)
+			end
+			self.countSecs = self.countSecs - 1
+			if self.countSecs < 0 then self.countSecs = -99999 end
 		end
-		self.countSecs = self.countSecs - 1
-		if self.countSecs < 0 then self.countSecs = -99999 end
 	end
 end
 
-function Round:distribBonuses()
+function Round:distribBonuses(i)
 	for _,e in ipairs(EasyLD.screen.current:getTop()) do
-		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop()))
+		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop(), i))
 	end
 end
 
 function Round:newEvent()
-	local nb = math.random(1, 4)
+	local nb = math.random(2, 3)
 	if nb == 1 then
 		table.insert(self.entities, Bubbles:new())
 	elseif nb >= 2 and nb < 4 then

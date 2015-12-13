@@ -11,6 +11,10 @@ local World = require 'World'
 local Map = require 'Map'
 
 local Round1 = require 'rounds.Round1'
+local Round2 = require 'rounds.Round2'
+local RoundCorrupted = require 'rounds.RoundCorrupted'
+local RoundArea = require 'rounds.RoundArea'
+local RoundBubbles = require 'rounds.RoundBubbles'
 
 function GameScreen:initialize()
 	self.player = Player:new(700, 500, EasyLD.circle:new(700, 500, 5))
@@ -24,7 +28,7 @@ function GameScreen:initialize()
 		end
 	end
 
-	self.rounds = {Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice)}
+	self.rounds = {Round2:new(self.slice), RoundArea:new(self.slice), RoundBubbles:new(self.slice), RoundCorrupted:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice), Round1:new(self.slice)}
 	self.currentRound = 1
 
 	self.entities = {}
@@ -54,6 +58,8 @@ function GameScreen:initialize()
 	self.areaPoly:attach(self.poly2)
 
 	playlist:play("next")
+
+	self.start = true
 end
 
 function GameScreen:preCalcul(dt)
@@ -61,6 +67,9 @@ function GameScreen:preCalcul(dt)
 end
 
 function GameScreen:update(dt)
+	if self.start then 
+		self.rounds[1]:load(#self.entities - 1)
+		self.start = false end
 	local timeB = os.clock()
 
 	self.BGtime = self.BGtime + dt
@@ -90,7 +99,7 @@ function GameScreen:update(dt)
 		playlist:play("next")
 	end
 
-	print("TIME UPDATE " .. (os.clock() - timeB))
+	--print("TIME UPDATE " .. (os.clock() - timeB))
 end
 
 function GameScreen:changeColor()
@@ -168,7 +177,7 @@ function GameScreen:draw()
 
 	EasyLD.postfx:use("pixelate", 2, 2)
 
-	print("TIME draw " .. (os.clock() - timeB))
+	--print("TIME draw " .. (os.clock() - timeB))
 end
 
 function GameScreen:onEnd()

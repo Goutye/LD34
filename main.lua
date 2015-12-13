@@ -52,7 +52,7 @@ function EasyLD:preCalcul(dt)
 end
 
 function EasyLD:update(dt)
-	print(fps, dt)
+	--print(fps, dt)
 end
 
 function EasyLD:draw()

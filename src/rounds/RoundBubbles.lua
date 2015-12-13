@@ -16,10 +16,10 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 60
+	self.totalTime = 40
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
-	self.roundName = "Round " .. (10 - self.nbAIStart)
+	self.roundName = "Round Bubbles"
 	self.timerOnEnd = 0
 	self.timerOnEndMax = 5
 	self:newEvent()
@@ -54,7 +54,7 @@ function Round:initialize(slice)
 
 	self.countSecs = 10
 
-	self.roundInfo = "  Grow!"
+	self.roundInfo = "Get the bubbles!"
 	self.isStart = true
 	self.timeStart = 0
 	self.timeStartMax = 2
@@ -72,8 +72,6 @@ function Round:load(nbAIStart)
 
 	self.entities = {}
 	self:newEvent()
-
-	EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
 end
 
 function Round:update(dt)
@@ -102,12 +100,12 @@ function Round:update(dt)
 		end
 
 		self.totalTime = self.totalTime - dt
-		if self.totalTime < 40 and not self.bonus[1] then
+		if self.totalTime < 30 and not self.bonus[1] then
 			self.bonus[1] = true
-			self:distribBonuses()
-		elseif self.totalTime < 20 and not self.bonus[2] then
+			self:distribBonuses(4)
+		elseif self.totalTime < 15 and not self.bonus[2] then
 			self.bonus[2] = true
-			self:distribBonuses()
+			self:distribBonuses(4)
 		elseif self.totalTime < 0 then
 			self.totalTime = 0
 			self.isEnd = true
@@ -135,14 +133,14 @@ function Round:update(dt)
 	end
 end
 
-function Round:distribBonuses()
+function Round:distribBonuses(i)
 	for _,e in ipairs(EasyLD.screen.current:getTop()) do
-		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop()))
+		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop(), i))
 	end
 end
 
 function Round:newEvent()
-	local nb = math.random(1, 4)
+	local nb = math.random(1, 2)
 	if nb == 1 then
 		table.insert(self.entities, Bubbles:new())
 	elseif nb >= 2 and nb < 4 then

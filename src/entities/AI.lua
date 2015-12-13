@@ -49,7 +49,7 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 end
 
 function AI:update(dt)
-	ACCELERATION = 750 + self.growing /2
+	ACCELERATION = 600 + self.growing /2
 	self.dt = dt
 	self.acceleration = EasyLD.point:new(0, 0)
 
