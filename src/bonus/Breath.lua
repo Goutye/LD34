@@ -4,7 +4,7 @@ local Breath = class('Breath')
 
 function Breath:initialize(entity)
 	self.name = "Breath"
-	self.time = 0
+	self.time = 0.5
 	self.timeMax = 1
 	self.entity = entity
 	self.max = 300
@@ -30,12 +30,15 @@ function Breath:initialize(entity)
 					[1] = 2})
 	self.system:setTexture(surf)
 	self.emit = false
+
+	self.sfx = EasyLD.sfx:new("assets/sfx/breath.wav", 0.7)
 end
 
 function Breath:update(dt)
 	if EasyLD.mouse:isDown('l') then
 		self.time = self.time + dt
 	elseif EasyLD.mouse:isReleased('l') and not self.emit then
+		self.sfx:play()
 		self.emit = true
 		self.system:emit(70)
 		self:action(math.min(self.time / self.timeMax, 1))
@@ -66,8 +69,14 @@ function Breath:action(percent)
 			v:normalize()
 			local ratioDist = math.max(1 - dist/self.max, 0)
 			local ratioWeight = (self.entity.growing or 50) * 2 / (e.growing or 50)
-			print( ratioDist, ratioWeight, percent)
-			e.speed = v * 600 * ratioWeight * percent * ratioDist + e.speed * (1 - ratioDist)
+			--print( ratioDist, ratioWeight, percent)
+			v = v * 600 * ratioWeight * percent * ratioDist
+			e.speed = v + e.speed * (1 - ratioDist)
+
+			if e.isPlayer and ratioDist > 0 then
+				--player
+				EasyLD.camera:tilt(v, 20, 1)
+			end
 		end
 	end
 

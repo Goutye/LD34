@@ -8,6 +8,7 @@ function Heavy:initialize(entity)
 	self.time = 0
 	self.timeMax = 3
 	self.active = false
+	self.sfx = EasyLD.sfx:new("assets/sfx/use_bonus.wav", 0.7)
 end
 
 function Heavy:update(dt, top)
@@ -19,6 +20,10 @@ function Heavy:update(dt, top)
 			self.entity.bonus = nil
 			self.active = false
 		end
+	end
+
+	if EasyLD.mouse:isPressed('l') then
+		self.sfx:play()
 	end
 end
 

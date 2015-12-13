@@ -8,12 +8,14 @@ function Acceleration:initialize(entity)
 	self.timeMax = 2
 	self.entity = entity
 	self.active = false
+	self.sfx = EasyLD.sfx:new("assets/sfx/boost.wav", 0.7)
 end
 
 function Acceleration:update(dt)
 	if EasyLD.mouse:isPressed('l') and not self.active then
 		self.active = true
 		self.entity.speed = self.entity.speed * 2
+		self.sfx:play()
 	end
 
 	if self.active then

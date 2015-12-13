@@ -3,7 +3,7 @@ local class = require 'EasyLD.lib.middleclass'
 local SFX = class('SFX')
 
 function SFX:initialize(name, volume, position, pitch)
-	self.m = drystal.load_sound(name)
+	self.m = assert(drystal.load_sound(name))
 	self.volume = volume or 1
 	self.position = position or {x = 0, y = 0}
 	self.pitch = pitch or 1

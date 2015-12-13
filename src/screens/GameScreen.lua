@@ -18,7 +18,7 @@ function GameScreen:initialize()
 	self.slice = World:new(self.map, EasyLD.window.w, EasyLD.window.h)
 
 	self.slice:addEntity(self.player)
-	for i = 2, 2 do
+	for i = 0, 2 do
 		for j = 0, 2 do
 			self.slice:addEntity(AI:new(300 + i *100, 300 + j *100, EasyLD.circle:new(300 + i *100, 300 + j *100, 5, EasyLD.color:new(255,0,200))))
 		end
@@ -77,7 +77,7 @@ function GameScreen:update(dt)
 		else
 			self.rounds[self.currentRound].slice = self.rounds[self.currentRound - 1].slice
 		end
-		self.rounds[self.currentRound].nbAIStart = #self.entities - 1
+		self.rounds[self.currentRound]:load(#self.entities - 1)
 	end
 end
 
@@ -103,9 +103,17 @@ function GameScreen:draw()
 	EasyLD.camera:reset()
 
 	self.slice:draw()
+
+	if self.rounds[self.currentRound].isEnd then
+		local r= self.rounds[self.currentRound]
+		local ratio = -math.abs(r.timerOnEnd / (r.timerOnEndMax + 1) - 0.5) * 2 + 1
+		if ratio > 0.33 then ratio = 0.33 end
+		EasyLD.postfx:use("blurDir", -25 * ratio, 50 * ratio )
+	end
 	self.rounds[self.currentRound]:draw()
 
 	self.polygon:draw()
+
 	--[[
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
 	for i,p in ipairs(self.entities) do
@@ -136,6 +144,15 @@ function GameScreen:draw()
 
 	self.player:drawUI()
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
+	
+	if self.player.isCorrupted then
+		local ratio = self.player.time/self.player.timeCorrupted
+		local x = 15
+		if ratio < 0.2 then x = ratio * 5 * x
+		elseif ratio >0.8 then x = (1-ratio) * 5 * x end
+		EasyLD.postfx:use("distortion", ratio*3, x, x)
+	end
+
 	EasyLD.postfx:use("pixelate", 2, 2)
 end
 

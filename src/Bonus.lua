@@ -33,7 +33,7 @@ function Bonus:get(entity, top)
 
 	for i = 1, #self.rankPool do
 		if score < self.rankPool[i] then
-			return Acceleration:new(entity, top)--self.pool[i][math.random(1, #self.pool[i])]:new(entity, top)
+			return self.pool[i][math.random(1, #self.pool[i])]:new(entity, top)
 		end
 	end
 end
