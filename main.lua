@@ -48,11 +48,18 @@ function EasyLD:preCalcul(dt)
 		fps = temp
 		temp = 0
 	end
+
 	return dt
 end
 
 function EasyLD:update(dt)
-	--print(fps, dt)
+	if dtAcc < dt then
+		if fps > 30 then
+			print(fps, dt, "Playable")
+		else
+			print(fps, "A bit too low: Play with a Linux/MacOS/Window version")
+		end
+	end
 end
 
 function EasyLD:draw()

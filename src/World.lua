@@ -47,11 +47,13 @@ function WorldSlice:update(dt)
 	end
 
 	for _,id in ipairs(deadEntities) do
-		table.remove(self.entities, id)
-		print(#self.entities, id)
-		--print("removed")
-		for i = id, #self.entities do
-			self.entities[i].id = i
+		if id < #self.entities then 
+			table.remove(self.entities, id)
+			print(#self.entities, id)
+			--print("removed")
+			for i = id, #self.entities do
+				self.entities[i].id = i
+			end
 		end
 	end
 end
