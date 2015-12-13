@@ -16,7 +16,7 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 60
+	self.totalTime = 45
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
 	self.roundName = "Round " .. (10 - self.nbAIStart)

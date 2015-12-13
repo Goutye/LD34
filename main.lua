@@ -36,20 +36,24 @@ function EasyLD:load()
 	EasyLD:nextScreen(TitleScreen:new())
 end
 
+fps = 0
+temp = 0
+dtAcc = 0
+
 function EasyLD:preCalcul(dt)
-	-- local fps = EasyLD:getFPS()
-	-- if fps ~= 0 then
-	-- 	return 1/120
-	-- else
-	-- 	return dt
-	-- end
+	temp = temp + 1
+	dtAcc = dtAcc + dt
+	if dtAcc >= 1 then
+		dtAcc = dtAcc - 1
+		fps = temp
+		temp = 0
+	end
 	return dt
 end
 
 function EasyLD:update(dt)
-
+	print(fps, dt)
 end
 
 function EasyLD:draw()
-	--font:print("FPS: "..EasyLD:getFPS(), 20, EasyLD.box:new(0, WINDOW_HEIGHT-50, 100, 50), nil, "bottom", EasyLD.color:new(255,255,255))
 end

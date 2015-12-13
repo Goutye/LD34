@@ -42,6 +42,10 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 	self.bonus = nil
 	self.newEventLaunched = false
 	self.prevEvent = nil
+
+	self.dir = nil
+	self.frame = 1
+	self.maxFrame = 1
 end
 
 function AI:update(dt)
@@ -67,7 +71,13 @@ function AI:update(dt)
 		self.collideArea.r = 0
 	end
 
-	self:interactWith(dt)
+	self.frame = self.frame + 1
+	if self.frame >= self.maxFrame then
+		self:interactWith(dt * self.maxFrame)
+		self.frame = 0
+		if self.dir == nil then self.dir = EasyLD.vector:new(EasyLD.window.w / 2, EasyLD.window.h / 2) end
+		self.dir:normalize()
+	end
 
 	if self.isCorrupted then
 		self.collideArea.c = EasyLD.color:new(0, 112, 225)
@@ -84,6 +94,9 @@ function AI:update(dt)
 	if self.bonus ~= nil then
 		self.bonus:updateAI(dt, EasyLD.screen.current:getTop())
 	end
+	if self.dir == nil then self.dir = EasyLD.vector:new(0,1) end
+	self.acceleration.x = self.acceleration.x + ACCELERATION * self.dir.x
+	self.acceleration.y = self.acceleration.y + ACCELERATION * self.dir.y
 end
 
 function AI:interactWith(dt)
@@ -146,6 +159,7 @@ end
 function AI:interactOpponents(opponents)
 	if self.isCorrupted then
 		self:interactCorrupted(opponents)
+		return
 	end
 	local target = nil
 	local growing = -500
@@ -158,10 +172,7 @@ function AI:interactOpponents(opponents)
 	if target == nil then
 		target = {pos = EasyLD.point:new(EasyLD.window.w / 2, EasyLD.window.h / 2)}
 	end
-	dir = EasyLD.vector:of(self.pos, target.pos)
-	dir:normalize()
-	self.acceleration.x = self.acceleration.x + ACCELERATION * dir.x
-	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
+	self.dir = EasyLD.vector:of(self.pos, target.pos)
 end
 
 function AI:interactCorrupted(opponents)
@@ -182,15 +193,13 @@ function AI:interactCorrupted(opponents)
 		minDir = EasyLD.vector:of(self.pos, EasyLD.point:new(EasyLD.window.w / 2, EasyLD.window.h / 2))
 	end
 
-	minDir:normalize()
-	self.acceleration.x = self.acceleration.x + ACCELERATION * minDir.x
-	self.acceleration.y = self.acceleration.y + ACCELERATION * minDir.y
+	self.dir = minDir
 end
 
 function AI:interactBubbles(e, opponents)
 	--Go to the shortest distance between you and a bubble
 	--Have a chance to focus on the opponents if growing > 0
-
+	local dir
 	local minDirO = nil
 	local minDistO = 9999999999
 	if self.isCorrupted then
@@ -252,15 +261,12 @@ function AI:interactBubbles(e, opponents)
 		end
 	end
 
-	dir:normalize()
-	self.acceleration.x = self.acceleration.x + ACCELERATION * dir.x
-	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
+	self.dir = dir
 end
 
 function AI:interactLightArea(e, opponents)
 	--Go in the area
 	--Bump the player
-
 	local minDirO = nil
 	local minDistO = 9999999999
 	if self.isCorrupted then
@@ -327,9 +333,7 @@ function AI:interactLightArea(e, opponents)
 		dir = EasyLD.vector:of(self.pos, safestP) + minDir
 	end
 
-	dir:normalize()
-	self.acceleration.x = self.acceleration.x + ACCELERATION * dir.x
-	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
+	self.dir = dir
 end
 
 function AI:interactLightRay(e, opponents)
@@ -389,9 +393,7 @@ function AI:interactLightRay(e, opponents)
 		dir = bestDir
 	end
 
-	dir:normalize()
-	self.acceleration.x = self.acceleration.x + ACCELERATION * dir.x
-	self.acceleration.y = self.acceleration.y + ACCELERATION * dir.y
+	self.dir = dir
 end
 
 function AI:onDeath()
