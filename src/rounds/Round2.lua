@@ -195,13 +195,14 @@ function Round:draw()
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
 				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
-				box.y = box.y + 30
-				box.x = box.x -15
+			elseif e.isPlayer then
+				local c = EasyLD.color:new(165,54,162)
+				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
 			else				
 				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
-				box.y = box.y + 30
-				box.x = box.x - 15
 			end
+			box.y = box.y + 30
+			box.x = box.x -15
 		end
 	end
 end
