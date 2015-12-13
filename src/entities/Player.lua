@@ -4,7 +4,7 @@ local Entity = require 'EasyLD.Entity'
 local Player = class('Player', Entity)
 
 function Player:initialize(x, y, collideArea, spriteAnimation)
-	self.name = -1
+	self.name = "YOU"
 	self.isPlayer = true
 	self.pos = EasyLD.point:new(x, y)
 	self.speed = EasyLD.vector:new(0, 0)

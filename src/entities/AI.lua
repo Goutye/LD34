@@ -15,7 +15,7 @@ local ACCELERATION = 750
 local nbAI = 0
 
 function AI:initialize(x, y, collideArea, spriteAnimation)
-	self.name = nbAI
+	self.name = "AI n°" ..nbAI
 	nbAI = nbAI + 1
 	self.pos = EasyLD.point:new(x, y)
 	self.speed = EasyLD.vector:new(0, 0)

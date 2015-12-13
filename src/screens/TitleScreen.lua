@@ -15,7 +15,7 @@ end
 
 function TitleScreen:update(dt)
 	if EasyLD.mouse:isPressed("l") then
-		EasyLD.screen:nextScreen(GameScreen:new(), "slide", {-1,0}, 2, false, "quadinout")
+		EasyLD.screen:nextScreen(GameScreen:new(), nil, nil, nil, true)
 	end
 end
 
