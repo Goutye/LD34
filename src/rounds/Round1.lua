@@ -114,10 +114,10 @@ function Round:draw()
 		self.polyTop.p[4].x = self.polyTop.p[1].x - (h * 25/50)
 		self.polyTop:draw()
 
-		local box2 = EasyLD.box:new(self.polyRound.x + 200, EasyLD.window.h/3+10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+		local box2 = EasyLD.box:new(self.polyRound.x + 200, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		
-		font:printOutLine(self.roundName, 30, box5, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		font:printOutLine(self.roundName, 60, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 
 		for i,e in ipairs(top) do
 			if i == #top or e.isDead then
