@@ -61,6 +61,8 @@ function GameScreen:preCalcul(dt)
 end
 
 function GameScreen:update(dt)
+	local timeB = os.clock()
+
 	self.BGtime = self.BGtime + dt
 	self.slice:update(dt)
 	self.rounds[self.currentRound]:update(dt)
@@ -87,6 +89,8 @@ function GameScreen:update(dt)
 		self.rounds[self.currentRound]:load(#self.entities - 1)
 		playlist:play("next")
 	end
+
+	print("TIME UPDATE " .. (os.clock() - timeB))
 end
 
 function GameScreen:changeColor()
@@ -95,6 +99,7 @@ function GameScreen:changeColor()
 end
 
 function GameScreen:draw()
+	local timeB = os.clock()
 	local nbCut = math.max((1 -self.BGtime / 60) * 4 + 2, 2)
 	if self.BGtime > 30 then
 		EasyLD.camera:scaleTo(1 + FLUX_FCT["sineinout"](math.abs((self.BGtime % nbCut) /nbCut - 0.5) * 2) * 0.1)
@@ -162,6 +167,8 @@ function GameScreen:draw()
 	end
 
 	EasyLD.postfx:use("pixelate", 2, 2)
+
+	print("TIME draw " .. (os.clock() - timeB))
 end
 
 function GameScreen:onEnd()

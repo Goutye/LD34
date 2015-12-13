@@ -45,7 +45,7 @@ function AI:initialize(x, y, collideArea, spriteAnimation)
 
 	self.dir = nil
 	self.frame = 1
-	self.maxFrame = 1
+	self.maxFrame = 5
 end
 
 function AI:update(dt)
