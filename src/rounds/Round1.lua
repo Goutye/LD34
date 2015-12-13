@@ -20,6 +20,14 @@ function Round:initialize(slice)
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
 
+	if self.nbAIStart > 3 then
+		self.roundName = "Round " .. 10 - self.nbAIStart
+	elseif self.nbAIStart == 3 then
+		self.roundName = "1/2-Final Round"
+	else
+		self.roundName = "Final Round"
+	end
+
 	self.timerOnEnd = 0
 	self.timerOnEndMax = 5
 	self:newEvent()
@@ -109,6 +117,8 @@ function Round:draw()
 		local box2 = EasyLD.box:new(self.polyRound.x + 200, EasyLD.window.h/3+10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		
+		font:printOutLine(self.roundName, 30, box5, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+
 		for i,e in ipairs(top) do
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
