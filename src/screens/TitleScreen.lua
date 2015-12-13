@@ -17,7 +17,7 @@ function TitleScreen:initialize()
 
 	for i = 0, 1 do
 		for j = 0, 1 do
-			self.slice:addEntity(AI:new(300 + i *100, 300 + j *100, EasyLD.circle:new(300 + i *100, 300 + j *100, 5, EasyLD.color:new(255,0,200))))
+			self.slice:addEntity(AI:new(300 + i *600, 300 + j *300, EasyLD.circle:new(300 + i *100, 300 + j *100, 5, EasyLD.color:new(255,0,200))))
 		end
 	end
 
