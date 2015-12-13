@@ -46,6 +46,9 @@ function LightRay:initialize()
 	self.dir:rotate(angle)
 
 	self.collideArea = EasyLD.polygon:new("fill", EasyLD.color:new(248,36,133,255), unpack(points))
+
+	self.sfx = EasyLD.sfx:new("assets/sfx/lightray.wav", 0.7)
+	self.sfx:play()
 end
 
 function LightRay:update(dt, slice)

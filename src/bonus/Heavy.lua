@@ -8,7 +8,7 @@ function Heavy:initialize(entity)
 	self.time = 0
 	self.timeMax = 3
 	self.active = false
-	self.sfx = EasyLD.sfx:new("assets/sfx/use_bonus.wav", 0.7)
+	self.sfx = EasyLD.sfx:new("assets/sfx/use_bonus.wav", 0.2)
 end
 
 function Heavy:update(dt, top)

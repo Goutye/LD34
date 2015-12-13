@@ -16,7 +16,7 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 11
+	self.totalTime = 2
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
 	self.roundName = "Round " .. (10 - self.nbAIStart)
@@ -110,7 +110,7 @@ function Round:distribBonuses()
 end
 
 function Round:newEvent()
-	local nb = math.random(1, 4)
+	local nb = math.random(4, 4)
 	if nb == 1 then
 		table.insert(self.entities, Bubbles:new())
 	elseif nb >= 2 and nb < 4 then

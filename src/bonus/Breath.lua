@@ -3,7 +3,7 @@ local class = require 'EasyLD.lib.middleclass'
 local Breath = class('Breath')
 
 function Breath:initialize(entity)
-	self.name = "Breath"
+	self.name = "Repulse"
 	self.time = 0.5
 	self.timeMax = 1
 	self.entity = entity

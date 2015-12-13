@@ -35,9 +35,17 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.boxBonus = EasyLD.box:new(-200, EasyLD.window.h/4 - 50, 300, 60, EasyLD.color:new(75,0,200, 150))
 	self.poly = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0,50), EasyLD.point:new(25,0), EasyLD.point:new(350,0), EasyLD.point:new(325,50))
 	self.poly:moveTo(self.boxBonus.x - 100, self.boxBonus.y + 100)
+	self.poly2 = self.poly:copy()
+	self.poly2.c = EasyLD.color:new(0, 0, 0, 180)
+	self.poly2:move(25, -50)
+
+	self.areaPoly = EasyLD.area:new(self.poly)
+	self.areaPoly:attach(self.poly2)
 
 	self.sfx = {}
 	--self.sfx.bonusCome = EasyLD.sfx:new("assets/sfx/gg2.wav", 0.7)
+	self.sfx.collide = EasyLD.sfx:new("assets/sfx/Collide2.wav", 0.15)
+
 end
 
 function Player:update(dt)
@@ -91,9 +99,9 @@ function Player:update(dt)
 					self.boxBonus:moveTo(-200, EasyLD.window.h/4 - 50)
 				end
 			)
-		EasyLD.flux.to(self.poly, 1, {x = EasyLD.window.w + 2}):ease("backin"):oncomplete(
+		EasyLD.flux.to(self.areaPoly, 1, {x = EasyLD.window.w + 2}):ease("backin"):oncomplete(
 				function ()
-					self.poly:moveTo(-300, EasyLD.window.h/4 + 50)
+					self.areaPoly:moveTo(-300, EasyLD.window.h/4 + 50)
 				end
 			)
 	end
@@ -111,8 +119,9 @@ function Player:onCollide(entity)
 	if self.isCorrupted then
 		self.growing = self.growing - 0.75
 		entity.growing = entity.growing + 0.75
+		sfx2:play()
 	else
-
+		self.sfx.collide:play()
 	end
 
 	if self.onCollideWith[entity.id] == nil then
@@ -168,7 +177,7 @@ function Player:setBonus(bonus)
 
 	self.gotBonus = true
 	EasyLD.flux.to(self.boxBonus, 1, {x = EasyLD.window.w / 2 - 150}):ease("backout")
-	EasyLD.flux.to(self.poly, 1, {x = EasyLD.window.w / 2 - 200}):ease("backout")
+	EasyLD.flux.to(self.areaPoly, 1, {x = EasyLD.window.w / 2 - 200}):ease("backout")
 end
 
 function Player:draw()
@@ -184,7 +193,7 @@ end
 
 function Player:drawUI()
 	if self.gotBonus then
-		self.poly:draw()
+		self.areaPoly:draw()
 		self.boxBonus:translate(10, 60)
 		self.boxBonus.w = self.boxBonus.w - 20
 		self.boxBonus.h = self.boxBonus.h - 20

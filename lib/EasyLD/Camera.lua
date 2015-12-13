@@ -164,9 +164,11 @@ end
 
 function Camera:makeShake(vars)
 	if vars.x ~= nil then
+		vars.x = math.ceil(vars.x)
 		EasyLD.camera.shakeX = math.random(-vars.x, vars.x)
 	end
 	if vars.y ~= nil then
+		vars.y = math.ceil(vars.y)
 		EasyLD.camera.shakeY = math.random(-vars.y, vars.y)
 	end
 	if vars.angle ~= nil then

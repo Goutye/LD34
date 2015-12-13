@@ -22,7 +22,7 @@ function Bubble:initialize(r, pos, dir, dirDt, ratio, speed, powerSinus)
 	self.box = EasyLD.box:new(0,0,EasyLD.window.w, EasyLD.window.h)
 	self.moveR = 2
 	self:moveRChange()
-	self.sfx = EasyLD.sfx:new("assets/sfx/goutte.wav", 0.7)
+	self.sfx = EasyLD.sfx:new("assets/sfx/goutte.wav", 0.6)
 	self.sfx:play()
 end
 

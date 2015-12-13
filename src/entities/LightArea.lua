@@ -2,6 +2,9 @@ local class = require 'EasyLD.lib.middleclass'
 
 local LightArea = class('LightArea')
 
+local sfxLA = EasyLD.sfx:new("assets/sfx/lightarea.wav", 0.1)
+local sfxCollide = EasyLD.sfx:new("assets/sfx/collide.wav", 0.1)
+
 function LightArea:initialize()
 	local points = {}
 	table.insert(points, EasyLD.point:new(0,0))
@@ -42,12 +45,30 @@ function LightArea:initialize()
 	self.timerDeadMax = 9
 
 	self:drawLineTimer()
+	sfxLA:play(0.1)
+
+	self.playerShake = false
+	self.timeShake = 0
 end
 
 function LightArea:update(dt, slice)
 	for _,entity in ipairs(slice.entities) do
 		if not entity:collide(self) and self.doDmg and not entity.passive then
 			entity.growing = entity.growing - self.power
+
+			if entity.isPlayer then
+				if not self.playerShake then
+					self.playerShake = true
+					EasyLD.camera:shake({x = 5, y = 5}, 0.2)
+					sfxCollide:play()
+				else
+					self.timeShake = self.timeShake + dt
+					if self.timeShake >= 0.2 then
+						self.timeShake = 0
+						self.playerShake = false
+					end
+				end
+			end
 		end
 	end
 
