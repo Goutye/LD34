@@ -22,8 +22,8 @@ function GameScreen:initialize()
 	self.slice = World:new(self.map, EasyLD.window.w, EasyLD.window.h)
 
 	self.slice:addEntity(self.player)
-	for i = 0, 1 do
-		for j = 0, 1 do
+	for i = 0, 2 do
+		for j = 0, 2 do
 			self.slice:addEntity(AI:new(300 + i *100, 300 + j *100, EasyLD.circle:new(300 + i *100, 300 + j *100, 5, EasyLD.color:new(255,0,200))))
 		end
 	end
