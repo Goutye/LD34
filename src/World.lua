@@ -37,14 +37,18 @@ function WorldSlice:update(dt)
 	local deadEntities = {}
 	for id,entity in ipairs(self.entities) do
 		if entity.isDead then
+			print("yes I am")
 			entity:onDeath()
-			self.entitiesOrder[math.floor(entity.pos.y)][entity] = nil
+			if self.entitiesOrder[math.floor(entity.pos.y)] ~= nil then
+				self.entitiesOrder[math.floor(entity.pos.y)][entity] = nil
+			end
 			table.insert(deadEntities, id)
 		end
 	end
 
 	for _,id in ipairs(deadEntities) do
 		table.remove(self.entities, id)
+		print("removed")
 		for i = id, #self.entities do
 			self.entities[i].id = i
 		end

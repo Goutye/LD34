@@ -4,7 +4,7 @@ local Entity = require 'EasyLD.Entity'
 local Player = class('Player', Entity)
 
 function Player:initialize(x, y, collideArea, spriteAnimation)
-	self.id = -1
+	self.name = -1
 	self.pos = EasyLD.point:new(x, y)
 	self.speed = EasyLD.vector:new(0, 0)
 	self.acceleration = EasyLD.vector:new(0, 0)
@@ -23,6 +23,15 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.onCollideWith = {}
 
 	self.prevPos = self.pos:copy()
+
+	self.isCorrupted = false
+	self.time = 0
+	self.timeCorrupted = 5
+
+	self.bonus = nil
+	self.bonusName = nil
+
+	self.boxBonus = EasyLD.box:new(-200, EasyLD.window.h/4 - 50, 300, 60, EasyLD.color:new(75,0,200, 150))
 end
 
 function Player:update(dt)
@@ -50,6 +59,33 @@ function Player:update(dt)
 			self.wasHit = false
 		end
 	end
+
+	if self.bonus ~= nil then
+		self.bonus:update(dt, EasyLD.screen.current:getTop())
+	end
+
+	if self.isCorrupted then
+		self.collideArea.c = EasyLD.color:new(0,100,0)
+		self.growing = self.growing - 0.075
+		self.time = self.time + dt
+		if self.time >= self.timeCorrupted then
+			self.time = 0
+			self.isCorrupted = false
+		end
+	else
+		self.collideArea.c = EasyLD.color:new(255,255,255)
+	end
+
+	if self.gotBonus and self.bonus == nil and not self.isEasing then
+		self.isEasing = true
+		EasyLD.flux.to(self.boxBonus, 1, {x = EasyLD.window.w + 2}):ease("backin"):oncomplete(
+				function ()
+					self.isEasing = false
+					self.gotBonus = false
+					self.boxBonus:moveTo(-200, EasyLD.window.h/4 - 50)
+				end
+			)
+	end
 end
 
 function Player:onDeath()
@@ -59,6 +95,11 @@ end
 function Player:onCollide(entity)
 	if entity.passive or self.wasHit then
 		return
+	end
+
+	if self.isCorrupted then
+		self.growing = self.growing - 0.75
+		entity.growing = entity.growing + 0.75
 	end
 
 	if self.onCollideWith[entity.id] == nil then
@@ -81,7 +122,7 @@ function Player:onCollide(entity)
 		self.speed = v * ratio * ratioWeight * self.onCollideWith[entity.id]
 		self.pos = self.pos + self.speed
 		self.collideArea:moveTo(self.pos.x, self.pos.y)
-		print("here", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
+		--print("here", self.speed.x, self.speed.y, self.onCollideWith[entity.id])
 		return
 	end
 
@@ -105,6 +146,40 @@ function Player:onCollide(entity)
 	self.collideArea:moveTo(self.pos.x, self.pos.y)
 
 	self.prevPos = self.pos:copy()
+end
+
+function Player:setBonus(bonus)
+	self.bonus = bonus
+	self.bonusName = bonus.name
+
+	self.gotBonus = true
+	EasyLD.flux.to(self.boxBonus, 1, {x = EasyLD.window.w / 2 - 150}):ease("backout")
+end
+
+function Player:draw()
+	if self.spriteAnimation ~= nil then
+		self.spriteAnimation:draw(self.pos)
+	else
+		self.collideArea:draw() --Comment this line for real, if test, uncomment
+		if self.bonus ~= nil then
+			self.bonus:draw()
+		end
+	end
+end
+
+function Player:drawUI()
+	if self.gotBonus then
+		self.boxBonus:draw()
+		self.boxBonus:translate(10, 10)
+		self.boxBonus.w = self.boxBonus.w - 20
+		self.boxBonus.h = self.boxBonus.h - 20
+		font:printOutLine(self.bonusName, 40, self.boxBonus, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+		self.boxBonus.x = self.boxBonus.x + 190
+		self.boxBonus.x = self.boxBonus.x - 190
+		self.boxBonus.w = self.boxBonus.w + 20
+		self.boxBonus.h = self.boxBonus.h + 20
+		self.boxBonus:translate(-10, -10)
+	end
 end
 
 return Player

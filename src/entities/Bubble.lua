@@ -4,7 +4,7 @@ local Entity = require 'EasyLD.Entity'
 local Bubble = class('Bubble', Entity)
 
 function Bubble:initialize(r, pos, dir, dirDt, ratio, speed, powerSinus)
-	self.collideArea = EasyLD.circle:new(pos.x, pos.y, r, EasyLD.color:new(0, 50, 200, 150))
+	self.collideArea = EasyLD.circle:new(pos.x, pos.y, r, EasyLD.color:new(50, 0, 200, 150))
 	self.dir = dir
 	self.ratio = ratio
 	self.dirDt = dirDt
@@ -20,14 +20,30 @@ function Bubble:initialize(r, pos, dir, dirDt, ratio, speed, powerSinus)
 	self.passive = true
 
 	self.box = EasyLD.box:new(0,0,EasyLD.window.w, EasyLD.window.h)
+	self.moveR = 2
+	self:moveRChange()
 end
 
 function Bubble:tryMove()
 end
 
+function Bubble:moveRChange()
+	self.timerR = EasyLD.flux.to(self, math.random()/2 + 0.25, {moveR = -self.moveR}):ease("quadinout"):oncomplete(
+			function()
+				if self.power > 0 and not self.isDead then
+					self:moveRChange()
+				end
+			end
+		)
+end
+
 function Bubble:update(dt)
 	self.t = self.t + dt
-	self.collideArea.r = self.power
+	if self.power > 0 then
+		self.collideArea.r = math.max(self.power + self.moveR, 1)
+	else
+		self.collideArea.r = 0
+	end
 
 	self.pos = self.pos + self.dir * self.speedDelta * dt + self.dir:normal() * math.sin(self.powerSinus.x * self.t) * self.powerSinus.y
 	self.collideArea:moveTo(self.pos.x, self.pos.y)

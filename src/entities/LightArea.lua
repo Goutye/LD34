@@ -36,7 +36,7 @@ function LightArea:initialize()
 	self.alpha = 0
 	self.nbTimes = 6
 	self.timerDead = 0
-	self.timerDeadMax = 10
+	self.timerDeadMax = 9
 
 	self:drawLineTimer()
 end
@@ -88,6 +88,10 @@ function LightArea:draw()
 			end
 		end
 	end
+end
+
+function LightArea:isEnded()
+	return self.timerDead >= self.timerDeadMax
 end
 
 function LightArea:collide(area)

@@ -14,13 +14,14 @@ function TitleScreen:preCalcul(dt)
 end
 
 function TitleScreen:update(dt)
-	if EasyLD.keyboard:isPressed(" ") then
-		EasyLD.screen:nextScreen(TutorialScreen:new(), "slide", {-1,0}, 2, false, "quadinout")
+	if EasyLD.mouse:isPressed("l") then
+		EasyLD.screen:nextScreen(GameScreen:new(), "slide", {-1,0}, 2, false, "quadinout")
 	end
 end
 
 function TitleScreen:draw()
-	font:printOutLine("??? - LD34", 20, EasyLD.box:new(0, 0,EasyLD.window.w, EasyLD.window.h), "right", "bottom", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+	EasyLD.box:new(0, 0, EasyLD.window.w, EasyLD.window.h, EasyLD.color:new(5, 0, 11)):draw()
+	font:printOutLine("Growing / Two buttons controls - LD34", 20, EasyLD.box:new(0, 0,EasyLD.window.w, EasyLD.window.h), "right", "bottom", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
 end
 
 function TitleScreen:onEnd()

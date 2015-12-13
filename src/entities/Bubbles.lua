@@ -5,20 +5,15 @@ local Bubble = require 'entities.Bubble'
 
 function Bubbles:initialize()
 	local side = math.random(0,1)
-	self.nbBubbles = math.random(10, 20)
+	self.nbBubbles = math.random(8, 12)
 	self.r = 10
 	self.ratioArc = math.random() /2 + .5
-	self.speedBubble = 100 + math.random() * 100
+	self.speedBubble = 150 + math.random() * 150
 	self.powerSinus = EasyLD.point:new(2 + math.random() * 8, 1 + math.random() * 3)
 
 	self.dir = EasyLD.vector:new(math.random() - 0.5, math.random() - 0.5)
 	self.dir:normalize()
 	self.pos = EasyLD.point:new(0, 0)
-	self.dirDt = self.dir:normal()
-	if math.random(1,2) == 1 then
-		self.dirDt.x = -self.dirDt.x
-		self.dirDt.y = -self.dirDt.y
-	end
 
 	if side < 1 then
 		local towardCenter = 0
@@ -46,6 +41,16 @@ function Bubbles:initialize()
 		else
 			self.pos.x = - self.r
 		end
+	end
+
+	self.dir = EasyLD.vector:of(self.pos, EasyLD.point:new(EasyLD.window.w/2, EasyLD.window.h/2))
+	self.angle = math.random() * math.pi/3 - math.pi/6
+	self.dir:normalize()
+	self.dir:rotate(self.angle)
+	self.dirDt = self.dir:normal()
+	if math.random(1,2) == 1 then
+		self.dirDt.x = -self.dirDt.x
+		self.dirDt.y = -self.dirDt.y
 	end
 
 	self.isDead = false
@@ -79,6 +84,10 @@ end
 
 function Bubbles:draw()
 	
+end
+
+function Bubbles:isEnded()
+	return self.nbBubbles <= 0
 end
 
 function Bubbles:collide(area)

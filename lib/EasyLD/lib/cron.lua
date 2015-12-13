@@ -30,6 +30,7 @@ local function checkTimeAndCallback(time, callback)
 end
 
 local entries = setmetatable({}, {__mode = "k"})
+local timerTable = {}
 
 local function newEntry(time, callback, update, ...)
 	local entry = {
@@ -96,8 +97,12 @@ function cron.cancel(id)
 end
 
 function cron.after(time, callback, ...)
-	checkTimeAndCallback(time, callback)
-	return newEntry(time, callback, updateTimedEntry, ...)
+	if drystal ~= nil then
+		table.insert(timerTable, drystal.new_timer(time, callback))
+	else
+		checkTimeAndCallback(time, callback)
+		return newEntry(time, callback, updateTimedEntry, ...)
+	end
 end
 
 function cron.every(time, callback, ...)
@@ -108,15 +113,33 @@ end
 function cron.update(dt)
 	assert(type(dt) == "number" and dt > 0, "dt must be a positive number")
 
-	local expired = {}
+	if drystal ~= nil then
+		local expired = 0
 
-	for _, entry in pairs(entries) do
-		if not entry.pause then
-			if entry:update(dt, runningTime) then table.insert(expired,entry) end
+		for i,t in ipairs(timerTable) do
+			t:update(dt)
+			if t.finished then
+				expired = expired + 1
+			end
 		end
-	end
 
-	for i=1, #expired do entries[expired[i]] = nil end
+		table.sort(timerTable, function(a,b) return b.isFinished end)
+
+		for i = 1, expired do
+			table.remove(timerTable)
+		end
+
+	else
+		local expired = {}
+
+		for _, entry in pairs(entries) do
+			if not entry.pause then
+				if entry:update(dt, runningTime) then table.insert(expired,entry) end
+			end
+		end
+
+		for i=1, #expired do entries[expired[i]] = nil end
+	end
 end
 
 return cron

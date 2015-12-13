@@ -73,4 +73,8 @@ function LightRay:collide(area)
 	return area:collide(self.collideArea)
 end
 
+function LightRay:isEnded()
+	return self.power <= 0
+end
+
 return LightRay

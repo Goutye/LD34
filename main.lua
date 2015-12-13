@@ -7,13 +7,18 @@ GameScreen = require 'screens.GameScreen'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 800
-DM = {}
+
+
+function round(num, idp)
+  return tonumber(string.format("%." .. (idp or 0) .. "f", num))
+end
 
 function EasyLD:load()
 	EasyLD.window:resize(WINDOW_WIDTH, WINDOW_HEIGHT)
 	EasyLD.window:setTitle("LD34 - Goutye")
 	EasyLD:nextScreen(GameScreen:new())
 	font = EasyLD.font:new("assets/fonts/visitor.ttf")
+	font2 = EasyLD.font:new("assets/fonts/Nouveau_IBM.ttf")
 end
 
 function EasyLD:preCalcul(dt)
