@@ -32,12 +32,16 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.bonus = nil
 	self.bonusName = nil
 
+	self.wait = false
+	self.timerWait = 0
+	self.timerWaitMax = 0.2
+
 	self.boxBonus = EasyLD.box:new(-200, EasyLD.window.h/4 - 50, 300, 60, EasyLD.color:new(75,0,200, 150))
 	self.poly = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0,50), EasyLD.point:new(25,0), EasyLD.point:new(350,0), EasyLD.point:new(325,50))
 	self.poly:moveTo(self.boxBonus.x - 100, self.boxBonus.y + 100)
 	self.poly2 = self.poly:copy()
-	self.poly2.c = EasyLD.color:new(0, 0, 0, 180)
-	self.poly2:move(25, -50)
+	self.poly2.c = EasyLD.color:new(0, 0, 0, 100)
+	self.poly2:translate(6.6, -3.375)
 
 	self.areaPoly = EasyLD.area:new(self.poly)
 	self.areaPoly:attach(self.poly2)
@@ -105,6 +109,14 @@ function Player:update(dt)
 				end
 			)
 	end
+
+	if self.wait then
+		self.timerWait = self.timerWait + dt
+		if self.timerWait >= self.timerWaitMax then
+			self.timerWait = 0
+			self.wait = false
+		end
+	end
 end
 
 function Player:onDeath()
@@ -119,9 +131,15 @@ function Player:onCollide(entity)
 	if self.isCorrupted then
 		self.growing = self.growing - 0.75
 		entity.growing = entity.growing + 0.75
-		sfx2:play()
+		if not self.wait then
+			sfx2:play()
+			self.wait = true
+		end
 	else
-		self.sfx.collide:play()
+		if not self.wait then
+			self.sfx.collide:play()
+			self.wait = true
+		end
 	end
 
 	if self.onCollideWith[entity.id] == nil then

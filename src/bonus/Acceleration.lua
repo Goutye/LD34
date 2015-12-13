@@ -2,20 +2,21 @@ local class = require 'EasyLD.lib.middleclass'
 
 local Acceleration = class('Acceleration')
 
+local boostSfx = EasyLD.sfx:new("assets/sfx/boost2.wav", 0.5)
+
 function Acceleration:initialize(entity)
 	self.name = "Boost"
 	self.time = 0
 	self.timeMax = 2
 	self.entity = entity
 	self.active = false
-	self.sfx = EasyLD.sfx:new("assets/sfx/boost2.wav", 0.5)
 end
 
 function Acceleration:update(dt)
 	if EasyLD.mouse:isPressed('l') and not self.active then
 		self.active = true
 		self.entity.speed = self.entity.speed * 2
-		self.sfx:play()
+		boostSfx:play()
 	end
 
 	if self.active then

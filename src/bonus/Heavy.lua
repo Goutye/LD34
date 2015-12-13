@@ -2,13 +2,14 @@ local class = require 'EasyLD.lib.middleclass'
 
 local Heavy = class('Heavy')
 
+local heavysfx = EasyLD.sfx:new("assets/sfx/use_bonus.wav", 0.2)
+
 function Heavy:initialize(entity)
 	self.name = "Heavy"
 	self.entity = entity
 	self.time = 0
 	self.timeMax = 3
 	self.active = false
-	self.sfx = EasyLD.sfx:new("assets/sfx/use_bonus.wav", 0.2)
 end
 
 function Heavy:update(dt, top)
@@ -23,7 +24,7 @@ function Heavy:update(dt, top)
 	end
 
 	if EasyLD.mouse:isPressed('l') then
-		self.sfx:play()
+		heavysfx:play()
 	end
 end
 

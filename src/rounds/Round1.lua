@@ -16,7 +16,7 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 2
+	self.totalTime = 3
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
 	self.roundName = "Round " .. (10 - self.nbAIStart)
@@ -29,10 +29,24 @@ function Round:initialize(slice)
 	self.polyRound.h = 100
 	self.polyRound:translate(-EasyLD.window.w/2, 100)
 
+	self.polyRound2 = self.polyRound:copy()
+	self.polyRound2.c = EasyLD.color:new(0,0,0,100)
+	self.polyRound2:translate(6.6, -3.375)
+
+	self.areaPolyRound = EasyLD.area:new(self.polyRound)
+	self.areaPolyRound:attach(self.polyRound2)
+
 	self.polyTop = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(EasyLD.window.w/2, 0), EasyLD.point:new(EasyLD.window.w + 400, 0), EasyLD.point:new(EasyLD.window.w + 400, 400), EasyLD.point:new(EasyLD.window.w/2-50*4, 400))
 	self.polyTop.w = 400
 	self.polyTop.h = 100
 	self.polyTop:translate(EasyLD.window.w/2, 250)
+
+	self.polyTop2 = self.polyTop:copy()
+	self.polyTop2.c = EasyLD.color:new(0,0,0,100)
+	self.polyTop2:translate(6.6, -3.375)
+
+	self.areaPolyTop = EasyLD.area:new(self.polyTop)
+	self.areaPolyTop:attach(self.polyTop2)
 
 	self.sfx = {}
 	self.sfx.fiveLast = EasyLD.sfx:new("assets/sfx/Last5seconds.wav", 0.7)
@@ -82,8 +96,8 @@ function Round:update(dt)
 			self.totalTime = 0
 			self.isEnd = true
 
-			EasyLD.flux.to(self.polyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
-			EasyLD.flux.to(self.polyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
+			EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
+			EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
 
 			for _,e in ipairs(EasyLD.screen.current:getTop()) do
 				e.bonus = nil
@@ -129,14 +143,16 @@ function Round:draw()
 
 	if self.isEnd then
 		local top = EasyLD.screen.current:getTop()
-		self.polyRound:draw()
+		self.areaPolyRound:draw()
 
 		local h = self.polyTop.p[3].y - self.polyTop.p[1].y
 		for i = 1, 2 do
 			self.polyTop.p[i + 2].y = self.polyTop.p[i].y + 30 * (2 + #top)
+			self.polyTop2.p[i + 2].y = self.polyTop2.p[i].y + 30 * (2 + #top)
 		end
 		self.polyTop.p[4].x = self.polyTop.p[1].x - (h * 25/50)
-		self.polyTop:draw()
+		self.polyTop2.p[4].x = self.polyTop2.p[1].x - (h * 25/50)
+		self.areaPolyTop:draw()
 
 		local box2 = EasyLD.box:new(self.polyRound.x + 400, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
@@ -174,8 +190,8 @@ function Round:onEnd(dt)
 	self.timerOnEnd = self.timerOnEnd + dt
 	if self.timerOnEnd >= self.timerOnEndMax and not self.timerEndMaxDone then
 		self.timerEndMaxDone = true
-		EasyLD.flux.to(self.polyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.nextRound = true end)
-		EasyLD.flux.to(self.polyTop, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backin")
+		EasyLD.flux.to(self.areaPolyRound, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backin"):oncomplete(function() self.nextRound = true end)
+		EasyLD.flux.to(self.areaPolyTop, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backin")
 	end
 end
 

@@ -47,6 +47,12 @@ function GameScreen:initialize()
 	self:changeColor()
 
 	self.polygon = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0, 0), EasyLD.point:new(400, 0), EasyLD.point:new(375, 50), EasyLD.point:new(0, 50))
+	self.poly2 = self.polygon:copy()
+	self.poly2.c = EasyLD.color:new(0, 0, 0, 100)
+	self.poly2:translate(6.6, -3.375)
+	self.areaPoly = EasyLD.area:new(self.polygon)
+	self.areaPoly:attach(self.poly2)
+
 end
 
 function GameScreen:preCalcul(dt)
@@ -112,7 +118,7 @@ function GameScreen:draw()
 	end
 	self.rounds[self.currentRound]:draw()
 
-	self.polygon:draw()
+	self.areaPoly:draw()
 
 	--[[
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)

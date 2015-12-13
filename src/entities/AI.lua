@@ -440,7 +440,7 @@ function AI:onCollide(entity)
 
 	speedEntity = speedEntity * ratioWeight * dir
 	self.speed = self.speed + speedEntity
-	self.pos = self.pos + speedEntity * self.dt
+	self.pos = self.pos + speedEntity * (self.dt or 0.01)
 	self.collideArea:moveTo(self.pos.x, self.pos.y)
 
 	self.prevPos = self.pos:copy()
