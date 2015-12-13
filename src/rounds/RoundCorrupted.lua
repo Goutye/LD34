@@ -63,7 +63,7 @@ end
 function Round:load(nbAIStart)
 	self.nbAIStart = nbAIStart
 	if self.nbAIStart > 2 then
-		self.roundName = "Round " .. (10 - self.nbAIStart)
+		--self.roundName = "Round " .. (10 - self.nbAIStart)
 	elseif self.nbAIStart == 2 then
 		self.roundName = "1/2-Final Round"
 	else
@@ -72,6 +72,8 @@ function Round:load(nbAIStart)
 
 	self.entities = {}
 	self:newEvent()
+
+	self.timerX = EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
 end
 
 function Round:update(dt)
@@ -160,7 +162,7 @@ function Round:draw()
 	if self.isStart then
 		self.areaPolyRound:draw()
 		local box2 = EasyLD.box:new(self.polyRound.x + 400, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
-		font:printOutLine(self.roundInfo, 90, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		font:printOutLine(self.roundInfo, 70, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 	end
 
 	if self.isEnd then
