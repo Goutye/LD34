@@ -60,9 +60,11 @@ function AI:update(dt)
 		end
 	end
 
-	if self.growing <= -50 then self.isDead = true end
+	if self.growing <= -50 then self.isDead = true
+		self.collideArea.r = 0 end
 	if not self.collideArea:collide(EasyLD.box:new(0, 0, EasyLD.window.w, EasyLD.window.h)) then
 		self.isDead = true
+		self.collideArea.r = 0
 	end
 
 	self:interactWith(dt)

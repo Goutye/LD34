@@ -14,7 +14,7 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.spriteAnimation = spriteAnimation
 	self.isDead = false
 
-	self.growing = 500
+	self.growing = 50
 	self.weight = 5
 
 	self.wasHit = false

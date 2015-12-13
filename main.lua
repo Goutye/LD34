@@ -16,9 +16,24 @@ end
 function EasyLD:load()
 	EasyLD.window:resize(WINDOW_WIDTH, WINDOW_HEIGHT)
 	EasyLD.window:setTitle("LD34 - Goutye")
-	EasyLD:nextScreen(GameScreen:new())
+
+
+	music = {}
+	--music.gg = EasyLD.music:new("assets/musics/titlescreen.mp3", nil, true)
+	playlist = EasyLD.playlist:new("ambiance", "fading", true)
+	playlist:add(EasyLD.music:new("assets/musics/m1.ogg"), nil, true)
+	playlist:add(EasyLD.music:new("assets/musics/m2.ogg"), nil, true)
+	playlist:add(EasyLD.music:new("assets/musics/m3.ogg"), nil, true)
+
+	for _,m in ipairs(playlist.list) do
+		m:setVolume(0.3)
+		m:setLooping(true)
+	end
+
 	font = EasyLD.font:new("assets/fonts/visitor.ttf")
 	font2 = EasyLD.font:new("assets/fonts/Nouveau_IBM.ttf")
+
+	EasyLD:nextScreen(GameScreen:new())
 end
 
 function EasyLD:preCalcul(dt)

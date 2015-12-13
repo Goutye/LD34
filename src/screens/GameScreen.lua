@@ -46,13 +46,14 @@ function GameScreen:initialize()
 	self.BGtimer = nil
 	self:changeColor()
 
-	self.polygon = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0, 0), EasyLD.point:new(400, 0), EasyLD.point:new(375, 50), EasyLD.point:new(0, 50))
+	self.polygon = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(-100, 0), EasyLD.point:new(400, 0), EasyLD.point:new(375, 50), EasyLD.point:new(-100, 50))
 	self.poly2 = self.polygon:copy()
 	self.poly2.c = EasyLD.color:new(0, 0, 0, 100)
 	self.poly2:translate(6.6, -3.375)
 	self.areaPoly = EasyLD.area:new(self.polygon)
 	self.areaPoly:attach(self.poly2)
 
+	playlist:play("next")
 end
 
 function GameScreen:preCalcul(dt)
@@ -84,6 +85,7 @@ function GameScreen:update(dt)
 			self.rounds[self.currentRound].slice = self.rounds[self.currentRound - 1].slice
 		end
 		self.rounds[self.currentRound]:load(#self.entities - 1)
+		playlist:play("next")
 	end
 end
 

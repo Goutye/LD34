@@ -16,7 +16,7 @@ function Round:initialize(slice)
 
 	self.slice = slice
 	self.entities = {}
-	self.totalTime = 3
+	self.totalTime = 60
 	self.bonus = {false, false}
 	self.nbAIStart =  #self.slice.entities - 1
 	self.roundName = "Round " .. (10 - self.nbAIStart)
@@ -64,6 +64,9 @@ function Round:load(nbAIStart)
 	else
 		self.roundName = "Final Round"
 	end
+
+	self.entities = {}
+	self:newEvent()
 end
 
 function Round:update(dt)
@@ -96,10 +99,12 @@ function Round:update(dt)
 			self.totalTime = 0
 			self.isEnd = true
 
+			self.endTop = EasyLD.screen.current:getTop()
+
 			EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
 			EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
 
-			for _,e in ipairs(EasyLD.screen.current:getTop()) do
+			for _,e in ipairs(self.endTop) do
 				e.bonus = nil
 			end
 		end
@@ -124,7 +129,7 @@ function Round:distribBonuses()
 end
 
 function Round:newEvent()
-	local nb = math.random(4, 4)
+	local nb = math.random(1, 4)
 	if nb == 1 then
 		table.insert(self.entities, Bubbles:new())
 	elseif nb >= 2 and nb < 4 then
@@ -142,7 +147,7 @@ function Round:draw()
 	end
 
 	if self.isEnd then
-		local top = EasyLD.screen.current:getTop()
+		local top = self.endTop
 		self.areaPolyRound:draw()
 
 		local h = self.polyTop.p[3].y - self.polyTop.p[1].y
@@ -165,7 +170,7 @@ function Round:draw()
 		end
 		font:printOutLine(self.roundName, 90, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 
-		for i,e in ipairs(top) do
+		for i,e in ipairs(self.endTop) do
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
 				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)

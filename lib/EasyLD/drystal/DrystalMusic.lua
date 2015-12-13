@@ -3,7 +3,7 @@ local class = require 'EasyLD.lib.middleclass'
 local Music = class('Music')
 
 function Music:initialize(name)
-	self.m = drystal.load_music(name)
+	self.m = assert(drystal.load_music(name))
 	self.looping = false
 	self.isPlaying = false
 	self.isPaused = false
