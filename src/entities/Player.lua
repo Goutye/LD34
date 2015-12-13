@@ -105,6 +105,8 @@ function Player:update(dt)
 			)
 		EasyLD.flux.to(self.areaPoly, 1, {x = EasyLD.window.w + 2}):ease("backin"):oncomplete(
 				function ()
+					self.isEasing = false
+					self.gotBonus = false
 					self.areaPoly:moveTo(-300, EasyLD.window.h/4 + 50)
 				end
 			)

@@ -8,9 +8,9 @@ function Particle:initialize(obj, img, x, y, size)
 	self.size = size or 512
 	if img then
 		if type(img) ~= "string" then
-			self.p = love.graphics.newParticleSystem(img.s, size)
+			self.p = assert(love.graphics.newParticleSystem(img.s, size))
 		else
-			self.p = love.graphics.newParticleSystem(love.graphics.newImage(img), size)
+			self.p = assert(love.graphics.newParticleSystem(love.graphics.newImage(img), size))
 		end
 	end
 	self.sizeP = 64

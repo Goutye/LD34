@@ -63,7 +63,7 @@ function Bonus:get(entity, top, id)
 
 	for i = 1, #self.rankPool do
 		if score < self.rankPool[i] then
-			return self.pool[id][i][math.random(1, #self.pool[id][i])]:new(entity, top)
+			return Breath:new(entity, top)--self.pool[id][i][math.random(1, #self.pool[id][i])]:new(entity, top)
 		end
 	end
 end

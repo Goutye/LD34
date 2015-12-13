@@ -14,8 +14,12 @@ local AI = class('AI', Entity)
 local ACCELERATION = 750
 local nbAI = 0
 
+local name = {"Roger", "Doge", "Moon Moon", "Suteben", "Fanzie", "Number", "Fromage", "Rikka", "Mike", "Goutye", "Saitama", "Chino", "Araragi", "Kidanger", "Senpai", "Waifu", "Albert", "Lelouch", "Harry", "Light", "Okabe", "Ushio"}
+
 function AI:initialize(x, y, collideArea, spriteAnimation)
-	self.name = "AI n°" ..nbAI
+	local n = math.random(1, #name)
+	self.name = name[n]
+	table.remove(name, n)
 	nbAI = nbAI + 1
 	self.pos = EasyLD.point:new(x, y)
 	self.speed = EasyLD.vector:new(0, 0)
@@ -448,6 +452,17 @@ function AI:onCollide(entity)
 	self.collideArea:moveTo(self.pos.x, self.pos.y)
 
 	self.prevPos = self.pos:copy()
+end
+
+function AI:draw()
+	if self.spriteAnimation ~= nil then
+		self.spriteAnimation:draw(self.pos)
+	else
+		self.collideArea:draw() --Comment this line for real, if test, uncomment
+		if self.bonus ~= nil then
+			self.bonus:draw()
+		end
+	end
 end
 
 function AI:setBonus(bonus)

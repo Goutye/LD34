@@ -14,7 +14,7 @@ function Breath:initialize(entity)
 	surf:drawOn()
 	EasyLD.box:new(0,0,64,64):draw()
 	EasyLD.surface:drawOnScreen()
-	self.system = EasyLD.particles:new(entity.pos)
+	self.system = EasyLD.particles:new(entity.pos, surf)
 	self.system:setEmissionRate(20)
 	self.system:setLifeTime(1)
 	self.system:setInitialVelocity(100)
@@ -22,8 +22,8 @@ function Breath:initialize(entity)
 	self.system:setDirection(math.pi, math.pi*2)
 	self.system:setColors({[0] = EasyLD.color:new(255,0,0,150), 
 					[0.3] = EasyLD.color:new(255,0,255,125), 
-					[0.7] = EasyLD.color:new(5,0,11,100), 
-					[1] = EasyLD.color:new(0,0,0,0)})
+					[0.7] = EasyLD.color:new(255,255,255,100), 
+					[1] = EasyLD.color:new(255,255,255,0)})
 	self.system:setSizes({[0] = 16,
 					[0.3] = 12,
 					[0.7] = 8,
