@@ -3,7 +3,7 @@ local class = require 'EasyLD.lib.middleclass'
 local Acceleration = class('Acceleration')
 
 function Acceleration:initialize(entity)
-	self.name = "Acceleration"
+	self.name = "Boost"
 	self.time = 0
 	self.timeMax = 2
 	self.entity = entity

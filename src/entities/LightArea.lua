@@ -22,13 +22,16 @@ function LightArea:initialize()
 	self.polygons = {}
 	for j = 0, 1 do
 		for i = 1, 3 do
-			table.insert(self.polygons, EasyLD.polygon:new("fill", EasyLD.color:new(43,11,109,0), points[j * 4 + i], points[j * 4 + i + 1], points[(j+1) * 4 + i + 1], points[(j+1) * 4 + i]))
+			local color = nil
+			if (i + j * 4) % 2 == 0 then color = EasyLD.color:new(251,40,249,0)
+			else color = EasyLD.color:new(201,30,199,0) end
+			table.insert(self.polygons, EasyLD.polygon:new("fill", color, points[j * 4 + i], points[j * 4 + i + 1], points[(j+1) * 4 + i + 1], points[(j+1) * 4 + i]))
 		end
 	end
 
 	self.safePolygon = math.random(1, 6)
 	self.collideArea = self.polygons[self.safePolygon]
-	self.collideArea.c = EasyLD.color:new(255,255, 0)
+	self.collideArea.c = EasyLD.color:new(248,36, 133)
 
 	self.doDmg = false
 	self.power = 0.25

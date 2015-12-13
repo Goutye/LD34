@@ -4,7 +4,7 @@ local Entity = require 'EasyLD.Entity'
 local Bubble = class('Bubble', Entity)
 
 function Bubble:initialize(r, pos, dir, dirDt, ratio, speed, powerSinus)
-	self.collideArea = EasyLD.circle:new(pos.x, pos.y, r, EasyLD.color:new(50, 0, 200, 150))
+	self.collideArea = EasyLD.circle:new(pos.x, pos.y, r, EasyLD.color:new(0, 112, 225))
 	self.dir = dir
 	self.ratio = ratio
 	self.dirDt = dirDt

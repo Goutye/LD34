@@ -45,7 +45,7 @@ function LightRay:initialize()
 
 	self.dir:rotate(angle)
 
-	self.collideArea = EasyLD.polygon:new("fill", EasyLD.color:new(255,255,255,100), unpack(points))
+	self.collideArea = EasyLD.polygon:new("fill", EasyLD.color:new(248,36,133,255), unpack(points))
 end
 
 function LightRay:update(dt, slice)
@@ -55,7 +55,7 @@ function LightRay:update(dt, slice)
 			growRate = (1 - growRate:length() / self.growRateMax)
 			self.power = self.power - growRate
 			entity.growing = entity.growing + growRate
-			self.collideArea.c.a = self.power
+			self.collideArea.c.a = self.power / 100 *255
 
 			if self.power <= 0 then
 				self.isDead = true

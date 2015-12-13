@@ -68,7 +68,7 @@ function AI:update(dt)
 	self:interactWith(dt)
 
 	if self.isCorrupted then
-		self.collideArea.c = EasyLD.color:new(0,100,0)
+		self.collideArea.c = EasyLD.color:new(0, 112, 225)
 		self.growing = self.growing - 0.075
 		self.time = self.time + dt
 		if self.time >= self.timeCorrupted then
@@ -76,7 +76,7 @@ function AI:update(dt)
 			self.isCorrupted = false
 		end
 	else
-		self.collideArea.c = EasyLD.color:new(255,0,200)
+		self.collideArea.c = EasyLD.color:new(248,36,133)
 	end
 
 	if self.bonus ~= nil then

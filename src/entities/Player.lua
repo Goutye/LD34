@@ -32,6 +32,8 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.bonusName = nil
 
 	self.boxBonus = EasyLD.box:new(-200, EasyLD.window.h/4 - 50, 300, 60, EasyLD.color:new(75,0,200, 150))
+	self.poly = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0,50), EasyLD.point:new(25,0), EasyLD.point:new(350,0), EasyLD.point:new(325,50))
+	self.poly:moveTo(self.boxBonus.x - 100, self.boxBonus.y + 50)
 end
 
 function Player:update(dt)
@@ -65,7 +67,7 @@ function Player:update(dt)
 	end
 
 	if self.isCorrupted then
-		self.collideArea.c = EasyLD.color:new(0,100,0)
+		self.collideArea.c = EasyLD.color:new(0, 112, 225)
 		self.growing = self.growing - 0.075
 		self.time = self.time + dt
 		if self.time >= self.timeCorrupted then
@@ -73,7 +75,7 @@ function Player:update(dt)
 			self.isCorrupted = false
 		end
 	else
-		self.collideArea.c = EasyLD.color:new(255,255,255)
+		self.collideArea.c = EasyLD.color:new(165,54,162)
 	end
 
 	if self.gotBonus and self.bonus == nil and not self.isEasing then
@@ -83,6 +85,11 @@ function Player:update(dt)
 					self.isEasing = false
 					self.gotBonus = false
 					self.boxBonus:moveTo(-200, EasyLD.window.h/4 - 50)
+				end
+			)
+		EasyLD.flux.to(self.poly, 1, {x = EasyLD.window.w + 2}):ease("backin"):oncomplete(
+				function ()
+					self.poly:moveTo(-300, EasyLD.window.h/4 - 50)
 				end
 			)
 	end
@@ -154,6 +161,7 @@ function Player:setBonus(bonus)
 
 	self.gotBonus = true
 	EasyLD.flux.to(self.boxBonus, 1, {x = EasyLD.window.w / 2 - 150}):ease("backout")
+	EasyLD.flux.to(self.poly, 1, {x = EasyLD.window.w / 2 - 200}):ease("backout")
 end
 
 function Player:draw()
@@ -169,7 +177,7 @@ end
 
 function Player:drawUI()
 	if self.gotBonus then
-		self.boxBonus:draw()
+		self.poly:draw()
 		self.boxBonus:translate(10, 10)
 		self.boxBonus.w = self.boxBonus.w - 20
 		self.boxBonus.h = self.boxBonus.h - 20
@@ -179,6 +187,13 @@ function Player:drawUI()
 		self.boxBonus.w = self.boxBonus.w + 20
 		self.boxBonus.h = self.boxBonus.h + 20
 		self.boxBonus:translate(-10, -10)
+
+
+		self.boxBonus:translate(180, 10)
+		if self.bonus ~= nil and self.bonus.active then
+			font:printOutLine(round(self.bonus.timeMax - self.bonus.time, 2), 40, self.boxBonus, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+		end
+		self.boxBonus:translate(-180, -10)
 	end
 end
 

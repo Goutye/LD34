@@ -6,7 +6,7 @@ function Heavy:initialize(entity)
 	self.name = "Heavy"
 	self.entity = entity
 	self.time = 0
-	self.timeActive = 2
+	self.timeMax = 3
 	self.active = false
 end
 
@@ -15,7 +15,7 @@ function Heavy:update(dt, top)
 		self.entity.weight = self.entity.weight * 2
 		self.active = true
 		self.time = self.time + dt
-		if self.time >= self.timeActive then
+		if self.time >= self.timeMax then
 			self.entity.bonus = nil
 			self.active = false
 		end
@@ -27,7 +27,7 @@ function Heavy:updateAI(dt, top, active)
 		self.entity.weight = self.entity.weight * 2
 		self.time = self.time + dt
 		self.active = true
-		if self.time >= self.timeActive then
+		if self.time >= self.timeMax then
 			self.entity.bonus = nil
 			self.active = false
 		end

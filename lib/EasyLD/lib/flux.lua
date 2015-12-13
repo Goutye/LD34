@@ -82,6 +82,8 @@ for k, v in pairs(easing) do
 	]], v)
 end
 
+FLUX_FCT = flux.easing
+
 
 
 local tween = {}

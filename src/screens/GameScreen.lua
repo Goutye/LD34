@@ -34,6 +34,19 @@ function GameScreen:initialize()
 
 	self.nbAIs = #self.entities - 1
 	self.nbAIsStart = self.nbAIs
+
+	self.BGbefore = EasyLD.box:new(0, 0, EasyLD.window.w, EasyLD.window.h, EasyLD.color:new(239, 222, 239))
+	self.BG = EasyLD.box:new(0, 0, EasyLD.window.w, EasyLD.window.h, EasyLD.color:new(255, 255, 255))
+	self.imgBG = EasyLD.image:new("assets/background.png")
+	self.BG:attachImg(self.imgBG)
+
+	self.BGtime = 0
+	self.BGcolor = {EasyLD.color:new(217,231,250), EasyLD.color:new(239, 222, 239), EasyLD.color:new(255, 216, 234), EasyLD.color:new(239, 222, 239)}
+	self.BGcurrent = 1
+	self.BGtimer = nil
+	self:changeColor()
+
+	self.polygon = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0, 0), EasyLD.point:new(400, 0), EasyLD.point:new(375, 50), EasyLD.point:new(0, 50))
 end
 
 function GameScreen:preCalcul(dt)
@@ -41,6 +54,7 @@ function GameScreen:preCalcul(dt)
 end
 
 function GameScreen:update(dt)
+	self.BGtime = self.BGtime + dt
 	self.slice:update(dt)
 	self.rounds[self.currentRound]:update(dt)
 
@@ -67,11 +81,31 @@ function GameScreen:update(dt)
 	end
 end
 
+function GameScreen:changeColor()
+	self.BGcurrent = self.BGcurrent % #self.BGcolor + 1
+	self.BGtimer = EasyLD.flux.to(self.BGbefore.c, 2, {r = self.BGcolor[self.BGcurrent].r, g = self.BGcolor[self.BGcurrent].g, b = self.BGcolor[self.BGcurrent].b}):ease("linear"):oncomplete(function() self:changeColor() end)
+end
+
 function GameScreen:draw()
-	EasyLD.box:new(0, 0, EasyLD.window.w, EasyLD.window.h, EasyLD.color:new(5, 0, 11)):draw()
+	local nbCut = math.max((1 -self.BGtime / 60) * 4 + 2, 2)
+	if self.BGtime > 30 then
+		EasyLD.camera:scaleTo(1 + FLUX_FCT["sineinout"](math.abs((self.BGtime % nbCut) /nbCut - 0.5) * 2) * 0.1)
+	end
+
+	self.BGbefore:draw()
+	EasyLD.graphics:setColor(EasyLD.color:new(255,255,255))
+	local x = (self.BGtime % 10)/10 * 1280
+	self.BG:moveTo(x, 0)
+	self.BG:draw()
+	self.BG:moveTo(x -1280, 0)
+	self.BG:draw()
+	EasyLD.box:new(x - 5, 0, 6, EasyLD.window.h, EasyLD.color:new(255,255,255)):draw()
+	EasyLD.camera:reset()
 
 	self.slice:draw()
 	self.rounds[self.currentRound]:draw()
+
+	self.polygon:draw()
 	--[[
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
 	for i,p in ipairs(self.entities) do
@@ -90,12 +124,19 @@ function GameScreen:draw()
 	if tonumber(milli) < 10 then milli = "0" .. milli end
 	if sec < 10 then sec = "0" .. sec end
 
-	local bonusSize = math.max(20 - sec, 0) * 2
+	local bonusSize = math.max(10 - secs, 0)
+	local tilt = math.abs((bonusSize % 2) / 2 - 0.5) * 2
+	if bonusSize > 6 then tilt = math.abs(bonusSize % 1 - 0.5) * 2 end
 
-	font2:print(math.floor(r.totalTime/60)..":"..sec..":"..milli, 60 + bonusSize, EasyLD.box:new(EasyLD.window.w/2 - 150 - bonusSize/2, 0, 190, 50), "left", "top", EasyLD.color:new(255,255,255))
+	font2:printOutLine(math.floor(r.totalTime/60)..":{r:255|g:"..(255*tilt).."|b:"..(255*tilt/2 + 255/2).."|"..sec.."}"..":"..milli, 60, EasyLD.box:new(50, 0, 190, 50), "left", "top", EasyLD.color:new(255 - bonusSize,255 - bonusSize * 5,255 - bonusSize), EasyLD.color:new(0,0,0), 2)
+
+	if tonumber(sec) < 4 and secs > 0 then
+		font2:printOutLine("{r:255|g:"..(255).."|b:"..(255).."|"..tonumber(sec).."}", 200, EasyLD.box:new(EasyLD.window.w/2 - 20, 300, 190, 300), "left", "top", EasyLD.color:new(255,255,255, 255*FLUX_FCT["quadinout"](1-tilt)), EasyLD.color:new(0,0,0, 0), 1)
+	end
 
 	self.player:drawUI()
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
+	EasyLD.postfx:use("pixelate", 2, 2)
 end
 
 function GameScreen:onEnd()
