@@ -54,7 +54,7 @@ function Round:initialize(slice)
 
 	self.countSecs = 10
 
-	self.roundInfo = "  Grow!"
+	self.roundInfo = "Grow and be the last!"
 	self.isStart = true
 	self.timeStart = 0
 	self.timeStartMax = 2
@@ -62,8 +62,12 @@ end
 
 function Round:load(nbAIStart)
 	self.nbAIStart = nbAIStart
-	if self.nbAIStart > 2 then
+	if self.nbAIStart > 4 then
 		self.roundName = "Round " .. (10 - self.nbAIStart)
+	elseif self.nbAIStart == 4 then
+		self.roundName = "1/8-Final Round"
+	elseif self.nbAIStart == 3 then
+		self.roundName = "1/4-Final Round"
 	elseif self.nbAIStart == 2 then
 		self.roundName = "1/2-Final Round"
 	else
@@ -182,7 +186,7 @@ function Round:draw()
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		
 		--print(self.nbAIStart)
-		if self.nbAIStart > 2 then
+		if self.nbAIStart > 4 then
 			box2.x = box2.x + 310
 		elseif self.nbAIStart == 1 then
 			box2.x = box2.x + 150
