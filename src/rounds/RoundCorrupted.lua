@@ -137,7 +137,9 @@ end
 
 function Round:distribBonuses(i)
 	for _,e in ipairs(EasyLD.screen.current:getTop()) do
-		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop(), i))
+		if not e.passive then
+			e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop(), i))
+		end
 	end
 end
 
@@ -178,7 +180,7 @@ function Round:draw()
 		self.polyTop2.p[4].x = self.polyTop2.p[1].x - (h * 25/50)
 		self.areaPolyTop:draw()
 
-		local box2 = EasyLD.box:new(self.polyRound.x + 150, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+		local box2 = EasyLD.box:new(self.polyRound.x + 50, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		
 		--print(self.nbAIStart)
@@ -192,12 +194,14 @@ function Round:draw()
 		for i,e in ipairs(self.endTop) do
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
-				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				if e.name ~= nil then
+					font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				end
 			elseif e.isPlayer then
 				local c = EasyLD.color:new(165,54,162)
-				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				font:printOutLine(i..". {r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..e.name.."} ".. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
 			else				
-				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 			end
 			box.y = box.y + 30
 			box.x = box.x -15

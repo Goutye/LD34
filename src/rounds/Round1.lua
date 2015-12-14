@@ -124,9 +124,19 @@ function Round:update(dt)
 			EasyLD.flux.to(self.areaPolyRound, 1, {x = EasyLD.window.w/1.5}, "relative"):ease("backout")
 			EasyLD.flux.to(self.areaPolyTop, 1, {x = -EasyLD.window.w/1.5}, "relative"):ease("backout")
 
+			local nbDead = 0
 			for _,e in ipairs(self.endTop) do
 				e.bonus = nil
+				if e.isDead then
+					nbDead = nbDead + 1
+				end
 			end
+
+			if nbDead == 0 then
+				self.endTop[#self.endTop].isDead = true
+				--print(top[#top].growing, top[#top].isDead)
+			end
+
 		end
 	end
 
@@ -142,9 +152,11 @@ function Round:update(dt)
 	end
 end
 
-function Round:distribBonuses()
+function Round:distribBonuses(i)
 	for _,e in ipairs(EasyLD.screen.current:getTop()) do
-		e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop()))
+		if not e.passive then
+			e:setBonus(BONUS:get(e, EasyLD.screen.current:getTop(), i))
+		end
 	end
 end
 
@@ -168,8 +180,8 @@ function Round:draw()
 
 	if self.isStart then
 		self.areaPolyRound:draw()
-		local box2 = EasyLD.box:new(self.polyRound.x + 400, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
-		font:printOutLine(self.roundInfo, 90, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+		local box2 = EasyLD.box:new(self.polyRound.x + 200, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+		font:printOutLine(self.roundInfo, 70, box2, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 	end
 
 	if self.isEnd then
@@ -199,12 +211,14 @@ function Round:draw()
 		for i,e in ipairs(self.endTop) do
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
-				font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				if e.name ~= nil then
+					font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				end
 			elseif e.isPlayer then
-				local c = EasyLD.color:new(175,58,172)
-				font:printOutLine(i.."{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..e.name..".} ".. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				local c = EasyLD.color:new(165,54,162)
+				font:printOutLine(i..". {r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..e.name.."} ".. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
 			else				
-				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
+				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 			end
 			box.y = box.y + 30
 			box.x = box.x -15
@@ -213,12 +227,6 @@ function Round:draw()
 end
 
 function Round:onEnd(dt)
-	if self.nbAIStart == EasyLD.screen.current.nbAIs then
-		local top = EasyLD.screen.current:getTop()
-		top[#top].isDead = true
-		--print(top[#top].growing, top[#top].isDead)
-	end
-
 	self.timerOnEnd = self.timerOnEnd + dt
 	if self.timerOnEnd >= self.timerOnEndMax and not self.timerEndMaxDone then
 		self.timerEndMaxDone = true

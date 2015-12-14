@@ -82,7 +82,9 @@ function GameScreen:update(dt)
 		self.currentRound = self.currentRound + 1
 		self.entities = {}
 		for _,p in ipairs(self.slice.entities) do
-			table.insert(self.entities, p)
+			if p.name ~= nil and not p.isDead then
+				table.insert(self.entities, p)
+			end
 		end
 
 		if self.player.isDead or #self.entities == 1 then
@@ -165,7 +167,9 @@ function GameScreen:draw()
 	end
 
 	self.player:drawUI()
-	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
+	table.sort(self.entities, function(a,b)
+								return a.growing ~= nil and (b.growing == nil or a.growing > b.growing)
+							end)
 	
 	if self.player.isCorrupted then
 		local ratio = self.player.time/self.player.timeCorrupted

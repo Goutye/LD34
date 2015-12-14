@@ -37,10 +37,10 @@ function Player:initialize(x, y, collideArea, spriteAnimation)
 	self.timerWaitMax = 0.2
 
 	self.boxBonus = EasyLD.box:new(-200, EasyLD.window.h/4 - 50, 300, 60, EasyLD.color:new(75,0,200, 150))
-	self.poly = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,240), EasyLD.point:new(0,50), EasyLD.point:new(25,0), EasyLD.point:new(350,0), EasyLD.point:new(325,50))
+	self.poly = EasyLD.polygon:new("fill", EasyLD.color:new(0,0,0,150), EasyLD.point:new(0,50), EasyLD.point:new(25,0), EasyLD.point:new(350,0), EasyLD.point:new(325,50))
 	self.poly:moveTo(self.boxBonus.x - 100, self.boxBonus.y + 100)
 	self.poly2 = self.poly:copy()
-	self.poly2.c = EasyLD.color:new(0, 0, 0, 100)
+	self.poly2.c = EasyLD.color:new(0, 0, 0, 90)
 	self.poly2:translate(6.6, -3.375)
 
 	self.areaPoly = EasyLD.area:new(self.poly)
