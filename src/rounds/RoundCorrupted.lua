@@ -180,7 +180,7 @@ function Round:draw()
 		self.polyTop2.p[4].x = self.polyTop2.p[1].x - (h * 25/50)
 		self.areaPolyTop:draw()
 
-		local box2 = EasyLD.box:new(self.polyRound.x + 50, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
+		local box2 = EasyLD.box:new(self.polyRound.x + 10, self.polyRound.y + 10, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		local box = EasyLD.box:new(self.polyTop.x + 60, self.polyTop.y + 30, EasyLD.window.w/3 - 100, EasyLD.window.h/3-10)
 		
 		--print(self.nbAIStart)
