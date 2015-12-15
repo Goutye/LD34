@@ -4,14 +4,23 @@ function love.load()
 	love.screen = love.graphics.newCanvas()
 end
 
+local currDt = 0
+local frate =  1/60
+
 function love.update(dt)
-	dt = EasyLD:preCalcul(dt)
-	dt = EasyLD:preCalculScreen(dt)
-	if EasyLD.screen.current then
-		EasyLD.screen:update(dt)
+	currDt = currDt + dt
+	if currDt >= frate then
+		dt = currDt
+		currDt = 0
+
+		dt = EasyLD:preCalcul(dt)
+		dt = EasyLD:preCalculScreen(dt)
+		if EasyLD.screen.current then
+			EasyLD.screen:update(dt)
+		end
+		EasyLD:update(dt)
+		EasyLD:updateComponents(dt)
 	end
-	EasyLD:update(dt)
-	EasyLD:updateComponents(dt)
 end
 
 function love.draw()
