@@ -195,11 +195,14 @@ function Round:draw()
 			if i == #top or e.isDead then
 				local c = EasyLD.color:new(248,36,133)
 				if e.name ~= nil then
-					font:printOutLine("{r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|[out] "..i ..".} " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+					font:printOutLine("[out] ".. i ..".", 30, box, "left", "top", c, EasyLD.color:new(0,0,0), 1)
+					box.x = box.x + 130
+					font:printOutLine(e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+					box.x = box.x - 130
 				end
 			elseif e.isPlayer then
 				local c = EasyLD.color:new(165,54,162)
-				font:printOutLine(i..". {r:"..c.r.."|g:"..c.g.."|b:"..c.b.."|"..e.name.."} ".. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 1)
+				font:printOutLine(i..". "..e.name..": " .. math.floor(e.growing or 0), 30, box, "left", "top", c, EasyLD.color:new(0,0,0), 1)
 			else				
 				font:printOutLine(i .. ". " .. e.name .. ": " .. math.floor(e.growing or 0), 30, box, "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(2,0,8), 1)
 			end

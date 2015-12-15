@@ -17,6 +17,7 @@ local nbAI = 0
 local name = {"Roger", "Doge", "Moon Moon", "Suteben", "Fanzie", "Number", "Fromage", "Rikka", "Mike", "Goutye", "Saitama", "Chino", "Araragi", "Kidanger", "Senpai", "Waifu", "Albert", "Lelouch", "Harry", "Light", "Okabe", "Ushio"}
 
 function AI:initialize(x, y, collideArea, spriteAnimation)
+	if #name == 0 then name = {"Roger", "Doge", "Moon Moon", "Suteben", "Fanzie", "Number", "Fromage", "Rikka", "Mike", "Goutye", "Saitama", "Chino", "Araragi", "Kidanger", "Senpai", "Waifu", "Albert", "Lelouch", "Harry", "Light", "Okabe", "Ushio"} end
 	local n = math.random(1, #name)
 	self.name = name[n]
 	table.remove(name, n)

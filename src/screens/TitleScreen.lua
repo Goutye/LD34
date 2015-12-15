@@ -131,7 +131,10 @@ function TitleScreen:draw()
 	local tilt = math.abs((bonusSize % 2) / 2 - 0.5) * 2
 	if bonusSize > 6 then tilt = math.abs(bonusSize % 1 - 0.5) * 2 end
 
-	font2:printOutLine(math.floor(r.totalTime/60)..":{r:255|g:"..(255*tilt).."|b:"..(255*tilt/2 + 255/2).."|"..sec.."}"..":"..milli, 60, EasyLD.box:new(50, 0, 190, 50), "left", "top", EasyLD.color:new(255 - bonusSize,255 - bonusSize * 5,255 - bonusSize), EasyLD.color:new(0,0,0), 2)
+	local c = EasyLD.color:new(255, 255*tilt, 255*tilt/2 + 255/2)
+
+	font2:printOutLine(math.floor(r.totalTime/60)..":  :"..milli, 60, EasyLD.box:new(50, -5, 190, 50), "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 2)
+	font2:printOutLine(sec, 60, EasyLD.box:new(118, -5, 190, 50), "left", "top", c, EasyLD.color:new(0,0,0), 2)
 
 	table.sort(self.entities, function(a,b) return a.growing > b.growing end)
 

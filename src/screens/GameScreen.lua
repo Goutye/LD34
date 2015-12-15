@@ -159,11 +159,13 @@ function GameScreen:draw()
 	local bonusSize = math.max(10 - secs, 0)
 	local tilt = math.abs((bonusSize % 2) / 2 - 0.5) * 2
 	if bonusSize > 6 then tilt = math.abs(bonusSize % 1 - 0.5) * 2 end
+	local c = EasyLD.color:new(255, 255*tilt, 255*tilt/2 + 255/2)
 
-	font2:printOutLine(math.floor(r.totalTime/60)..":{r:255|g:"..(255*tilt).."|b:"..(255*tilt/2 + 255/2).."|"..sec.."}"..":"..milli, 60, EasyLD.box:new(50, 0, 190, 50), "left", "top", EasyLD.color:new(255 - bonusSize,255 - bonusSize * 5,255 - bonusSize), EasyLD.color:new(0,0,0), 2)
+	font2:printOutLine(math.floor(r.totalTime/60)..":  :"..milli, 60, EasyLD.box:new(50, -5, 190, 50), "left", "top", EasyLD.color:new(255,255,255), EasyLD.color:new(0,0,0), 2)
+	font2:printOutLine(sec, 60, EasyLD.box:new(118, -5, 190, 50), "left", "top", c, EasyLD.color:new(0,0,0), 2)
 
 	if tonumber(sec) < 4 and secs > 0 then
-		font2:printOutLine("{r:255|g:"..(255).."|b:"..(255).."|"..tonumber(sec).."}", 200, EasyLD.box:new(EasyLD.window.w/2 - 20, 300, 190, 300), "left", "top", EasyLD.color:new(255,255,255, 255*FLUX_FCT["quadinout"](1-tilt)), EasyLD.color:new(0,0,0, 0), 1)
+		font2:printOutLine(tonumber(sec), 200, EasyLD.box:new(0, 300, EasyLD.window.w, 300), "center", "top", EasyLD.color:new(255,255,255, 255*FLUX_FCT["quadinout"](1-tilt)), EasyLD.color:new(0,0,0,255*FLUX_FCT["quadinout"](1-tilt)), 2)
 	end
 
 	self.player:drawUI()
