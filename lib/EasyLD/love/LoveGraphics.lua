@@ -37,7 +37,7 @@ function LoveGraphics:point(p, color)
 	local r, g, b, a = love.graphics.getColor()
 
 	love.graphics.setColor(color.r, color.g, color.b, color.a)
-	love.graphics.point(p.x, p.y)
+	love.graphics.points(p.x, p.y)
 	love.graphics.setColor(r, g, b, a)
 end
 

@@ -74,7 +74,7 @@ function TitleScreen:update(dt)
 	self.slice:update(dt)
 	self.rounds[self.currentRound]:update(dt)
 
-	if EasyLD.mouse:isPressed("l") then
+	if EasyLD.mouse:isPressed(1) then
 		EasyLD.screen:nextScreen(GameScreen:new(), "fusion", nil, 0.5, false, "quadinout")
 	end
 end

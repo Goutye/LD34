@@ -39,9 +39,9 @@ function Postfx:use(name, ...)
 	end
 
 	local sOld = love.graphics.getShader()
-	s[3]:clear()
 	
 	love.graphics.setCanvas(s[3])
+	love.graphics.clear()
 	love.graphics.setShader(s[1])
 	EasyLD.camera:push()
 	EasyLD.camera:reset()
@@ -52,7 +52,7 @@ function Postfx:use(name, ...)
 	end
 
 	local b = love.graphics.getBlendMode()
-	love.graphics.setBlendMode('premultiplied')
+	love.graphics.setBlendMode("alpha", "premultiplied") 
 	love.graphics.draw(love.screen, 0, 0)
 	love.graphics.setBlendMode(b)
 	love.graphics.setShader(sOld)

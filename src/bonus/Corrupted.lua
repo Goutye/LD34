@@ -12,7 +12,7 @@ function Corrupted:initialize(entity)
 end
 
 function Corrupted:update(dt, top)
-	if EasyLD.mouse:isPressed('l') then
+	if EasyLD.mouse:isPressed(1) then
 		top[1].isCorrupted = true
 		self.entity.bonus = nil
 		self.sfx:play()

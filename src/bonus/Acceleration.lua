@@ -13,7 +13,7 @@ function Acceleration:initialize(entity)
 end
 
 function Acceleration:update(dt)
-	if EasyLD.mouse:isPressed('l') and not self.active then
+	if EasyLD.mouse:isPressed(1) and not self.active then
 		self.active = true
 		self.entity.speed = self.entity.speed * 2
 		boostSfx:play()

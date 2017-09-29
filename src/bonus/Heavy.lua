@@ -13,7 +13,7 @@ function Heavy:initialize(entity)
 end
 
 function Heavy:update(dt, top)
-	if EasyLD.mouse:isPressed('l') or self.active then
+	if EasyLD.mouse:isPressed(1) or self.active then
 		self.entity.weight = self.entity.weight * 2
 		self.active = true
 		self.time = self.time + dt
@@ -23,7 +23,7 @@ function Heavy:update(dt, top)
 		end
 	end
 
-	if EasyLD.mouse:isPressed('l') then
+	if EasyLD.mouse:isPressed(1) then
 		heavysfx:play()
 	end
 end

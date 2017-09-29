@@ -24,8 +24,8 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.screen:clear()
 	love.graphics.setCanvas(love.screen)
+	love.graphics.clear()
 	EasyLD.camera:draw()
 	if EasyLD.screen.current then
 		EasyLD.screen:draw()

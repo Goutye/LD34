@@ -35,9 +35,9 @@ function Breath:initialize(entity)
 end
 
 function Breath:update(dt)
-	if EasyLD.mouse:isDown('l') then
+	if EasyLD.mouse:isDown(1) then
 		self.time = self.time + dt
-	elseif EasyLD.mouse:isReleased('l') and not self.emit then
+	elseif EasyLD.mouse:isReleased(1) and not self.emit then
 		self.sfx:play()
 		self.emit = true
 		self.system:emit(70)
